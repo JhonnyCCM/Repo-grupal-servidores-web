@@ -147,4 +147,4 @@ bun run preview
 
 - **Jandry Fernández** — Durante el desarrollo del prototipo descubrí nuevas técnicas para documentar el proyecto y vincular capturas en el README. La experiencia fortaleció la colaboración con el equipo y dejó claro que debo repasar conceptos técnicos esenciales y mejorar el criterio para plantear y ejecutar ideas rápidamente.
 
-- **Jhonny Castillo** — ...
+- **Jhonny Castillo** — El reto principal consistió en convertir los requisitos de administración de un gimnasio en una interfaz clara y atractiva. Adoptar un enfoque de diseño basado en componentes desde el principio fue esencial para mantener la consistencia visual en todas las pantallas. La colaboración directa con el desarrollador frontend facilitó la validación de que los diseños no solo eran estéticos, sino también técnicamente viables para implementar con Tailwind CSS, mejorando así el flujo de trabajo entre diseño y desarrollo.
