@@ -1,0 +1,9 @@
+import { Machine } from "./machine.js";
+
+export interface MachineRepository {
+    create(machine: Omit<Machine, "id">, callback: (error: Error | null, result?: string) => void): void;
+    update(id: string, machine: Partial<Machine>): Promise<Machine | null>;
+    getById(id: string): Promise<Machine | null>;
+    getAll(): Promise<Machine[]>;
+    delete(id: string): Promise<boolean>;
+}

@@ -1,0 +1,9 @@
+import { Coach } from "./coach.js";
+
+export interface CoachRepository {
+    create(coach: Omit<Coach, "id">, callback: (error: Error | null, result?: string) => void): void;
+    update(id: string, coach: Partial<Coach>): Promise<Coach | null>;
+    getById(id: string): Promise<Coach | null>;
+    getAll(): Promise<Coach[]>;
+    delete(id: string): Promise<boolean>;
+}
