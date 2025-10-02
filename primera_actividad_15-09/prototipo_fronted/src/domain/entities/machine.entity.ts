@@ -1,0 +1,15 @@
+import type { IRoom, ISpeciality, Status } from '../value-objects'
+
+export class Machine {
+  constructor(
+    public id: string,
+    public name: string,
+    public description: string,
+    public specialities: ISpeciality[],
+    public createdAt: Date,
+    public updatedAt: Date,
+    public imageUrl: string,
+    public room: IRoom[],
+    public status: Status,
+  ) {}
+}

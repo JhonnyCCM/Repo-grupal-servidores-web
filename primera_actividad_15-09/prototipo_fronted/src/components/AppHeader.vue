@@ -62,7 +62,7 @@ function handleScroll() {
           <li><router-link to="/classes" class="font-bold">Clases</router-link></li>
           <li><router-link to="/machines" class="font-bold">Máquinas</router-link></li>
           <li><router-link to="/coaches" class="font-bold">Entrenadores</router-link></li>
-          <li><router-link to= "/productos" class="font-bold">Productos</router-link></li>
+          <li><router-link to="/productos" class="font-bold">Productos</router-link></li>
         </ul>
       </div>
       <div class="navbar-end flex items-center">

@@ -36,7 +36,7 @@ export const useProductsStore = defineStore('products', () => {
         price: 59.99,
         stock: 25,
         rating: 4.8,
-        image: '/img/products/proteina.png'
+        image: '/img/products/proteina.png',
       },
       {
         id: 2,
@@ -45,7 +45,7 @@ export const useProductsStore = defineStore('products', () => {
         price: 24.5,
         stock: 15,
         rating: 4.9,
-        image: '/img/products/creatina.png'
+        image: '/img/products/creatina.png',
       },
       {
         id: 3,
@@ -54,7 +54,7 @@ export const useProductsStore = defineStore('products', () => {
         price: 19.99,
         stock: 50,
         rating: 4.5,
-        image: '/img/products/guantes.png'
+        image: '/img/products/guantes.png',
       },
       {
         id: 4,
@@ -63,7 +63,7 @@ export const useProductsStore = defineStore('products', () => {
         price: 9.99,
         stock: 0, // Producto agotado para probar la lógica
         rating: 4.7,
-        image: '/img/products/shaker.png'
+        image: '/img/products/shaker.png',
       },
       {
         id: 5,
@@ -72,7 +72,7 @@ export const useProductsStore = defineStore('products', () => {
         price: 15.0,
         stock: 30,
         rating: 4.6,
-        image: '/img/products/cuerda.png'
+        image: '/img/products/cuerda.png',
       },
       {
         id: 6,
@@ -81,8 +81,8 @@ export const useProductsStore = defineStore('products', () => {
         price: 35.0,
         stock: 8,
         rating: 4.7,
-        image: '/img/products/pre-entreno.png'
-      }
+        image: '/img/products/pre-entreno.png',
+      },
     ]
   }
 
@@ -91,6 +91,6 @@ export const useProductsStore = defineStore('products', () => {
     products,
     availableProducts,
     totalProducts,
-    init
+    init,
   }
 })

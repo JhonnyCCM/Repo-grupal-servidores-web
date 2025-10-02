@@ -52,25 +52,13 @@ import { Facebook, Twitter, Instagram, Youtube } from 'lucide-vue-next'
         <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
           <Facebook color="white" :size="32" />
         </a>
-        <a
-          href="https://x.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://x.com" target="_blank" rel="noopener noreferrer">
           <Twitter color="white" :size="32" />
         </a>
-        <a
-          href="https://www.instagram.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
           <Instagram color="white" :size="32" />
         </a>
-        <a
-          href="https://www.youtube.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">
           <Youtube color="white" :size="32" />
         </a>
       </div>

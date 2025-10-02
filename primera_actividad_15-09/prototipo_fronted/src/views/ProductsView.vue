@@ -25,9 +25,7 @@
           :key="category"
           @click="selectedCategory = category"
           :class="
-            selectedCategory === category
-              ? 'bg-purple-400 text-white'
-              : 'bg-gray-200 text-gray-700'
+            selectedCategory === category ? 'bg-purple-400 text-white' : 'bg-gray-200 text-gray-700'
           "
           class="px-4 py-2 rounded-full transition-colors"
         >
@@ -92,7 +90,9 @@
                 :disabled="product.stock === 0"
               >
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2zm-9.83-3.25l.03-.02.01.01L6.16 11h11.35l-3.4-6.39A1.94 1.94 0 0 0 12.35 4H7.64c-.58 0-1.11.27-1.44.71L3.2 11l1.79 3.25zM6.16 13l-1.97-3.55L7.64 6h4.72l2.6 4.84-2.27 1.16H6.16z" />
+                  <path
+                    d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2zm-9.83-3.25l.03-.02.01.01L6.16 11h11.35l-3.4-6.39A1.94 1.94 0 0 0 12.35 4H7.64c-.58 0-1.11.27-1.44.71L3.2 11l1.79 3.25zM6.16 13l-1.97-3.55L7.64 6h4.72l2.6 4.84-2.27 1.16H6.16z"
+                  />
                 </svg>
                 <span>Añadir</span>
               </button>
@@ -123,7 +123,7 @@ onMounted(() => {
 const uniqueCategories = computed(() => {
   // PASO 2: Añade el tipo a 'product'
   const allCategories = productsStore.availableProducts.map((product: Product) => product.category)
-  return [...new Set(allCategories)] 
+  return [...new Set(allCategories)]
 })
 
 // Productos filtrados por categoría
@@ -133,7 +133,7 @@ const filteredProducts = computed(() => {
   }
   // PASO 2: Añade el tipo a 'product' aquí también
   return productsStore.availableProducts.filter(
-    (product: Product) => product.category === selectedCategory.value
+    (product: Product) => product.category === selectedCategory.value,
   )
 })
 
@@ -209,12 +209,14 @@ const getStockBadgeClass = (stock: number): string => {
 }
 
 .products-view .shadow-lg {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .products-view .hover\:shadow-xl:hover {
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
