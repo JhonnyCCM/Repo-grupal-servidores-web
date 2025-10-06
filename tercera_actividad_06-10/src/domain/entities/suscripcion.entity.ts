@@ -1,4 +1,4 @@
-import type { PaymentMethod } from './PaymentMethod.js'
+import type { PaymentMethod } from './paymentMethod.js'
 import type { SuscripcionStatus } from '../value-objects.js'
 
 export class Suscripcion {

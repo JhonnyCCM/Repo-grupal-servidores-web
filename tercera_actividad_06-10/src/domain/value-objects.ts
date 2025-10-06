@@ -1,24 +1,3 @@
-export type CompraItem = {
-  readonly productId: string | number
-  readonly name?: string
-  readonly quantity: number
-  readonly unitPrice: number
-}
-
-export enum SuscripcionStatus {
-  ACTIVA = 'Activa',
-  PENDIENTE = 'Pendiente',
-  CANCELADA = 'Cancelada',
-  EXPIRADA = 'Expirada',
-}
-
-export enum CompraStatus {
-  PENDIENTE = 'Pendiente',
-  PAGADO = 'Pagado',
-  CANCELADO = 'Cancelado',
-  REEMBOLSADO = 'Reembolsado',
-}
-
 export enum DifficultyLevel {
   BEGINNER = 'Principiante',
   INTERMEDIATE = 'Intermedio',
@@ -61,4 +40,25 @@ export interface ICategory {
   readonly id: string
   readonly name: string
   readonly description: string
+}
+
+export type CompraItem = {
+  readonly productId: string | number
+  readonly name?: string
+  readonly quantity: number
+  readonly unitPrice: number
+}
+
+export enum SuscripcionStatus {
+  ACTIVA = 'Activa',
+  PENDIENTE = 'Pendiente',
+  CANCELADA = 'Cancelada',
+  EXPIRADA = 'Expirada',
+}
+
+export enum CompraStatus {
+  PENDIENTE = 'Pendiente',
+  PAGADO = 'Pagado',
+  CANCELADO = 'Cancelado',
+  REEMBOLSADO = 'Reembolsado',
 }
