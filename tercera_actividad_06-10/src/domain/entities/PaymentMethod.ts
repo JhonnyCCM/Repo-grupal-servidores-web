@@ -18,6 +18,4 @@ export interface PaymentMethod {
     };
     isVerified: boolean; // Indica si el método de pago ha sido verificado
     usageCount: number; // Número de veces que se ha utilizado este método de pago
-    linkedSubscriptions: string[]; // IDs de suscripciones vinculadas a este método de pago
-
 }

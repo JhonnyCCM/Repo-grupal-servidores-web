@@ -8,10 +8,6 @@ export class Product {
     public category: ICategory | string = '',
     public price: number = 0,
     public stock: number = 0,
-    public rating: number = 0,
     public imageUrl: string = '',
-    public isActive: boolean = true,
-    public createdAt: Date = new Date(),
-    public updatedAt: Date = new Date(),
   ) {}
 }
