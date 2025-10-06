@@ -1,0 +1,25 @@
+{
+  "name": "practica3",
+  "version": "1.0.0",
+  "description": "A continuación se detallan los pasos y requisitos para completar la práctica.",
+  "main": "src/presentation/demo.ts",
+  "type": "module",
+  "scripts": {
+    "start": "node --loader ts-node/esm src/presentation/demo.ts",
+    "dev": "nodemon --exec node --loader ts-node/esm src/presentation/demo.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@types/uuid": "^10.0.0",
+    "uuid": "^13.0.0"
+  }
+}
