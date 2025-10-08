@@ -1,33 +1,33 @@
-import { GymClass } from '../../domain/entities/gym-Class.entity.js'
-import type { GymClassRepository } from '../../domain/repositories/gym-class.repository.js'
+import { GymClass } from '../../domain/models/gym-class.model'
+import type { GymClassRepository } from '../../domain/repositories/gym-class.repository'
 import { v4 as uuid } from 'uuid'
 
 const gymClasses: GymClass[] = []
 
 export class InMemoryGymClassRepository implements GymClassRepository {
   create(
-    gymClass: Omit<GymClass, 'id'>,
+    gymClass: Omit<GymClass, 'id' | 'createdAt' | 'updatedAt'>,
     callback: (error: Error | null, result?: string) => void,
   ): void {
     setTimeout(() => {
       try {
-        const newGymClass = new GymClass(
-          uuid(),
-          gymClass.name,
-          gymClass.description,
-          gymClass.coach,
-          gymClass.category,
-          gymClass.duration,
-          gymClass.imageUrl,
-          gymClass.capacity,
-          gymClass.enrolledMembers,
-          gymClass.isActive,
-          gymClass.createdAt,
-          gymClass.updatedAt,
-          gymClass.room,
-          gymClass.difficultyLevel,
-          gymClass.schedule,
-        )
+        const newGymClass: GymClass = {
+          id: uuid(),
+          name: gymClass.name,
+          description: gymClass.description,
+          coachId: gymClass.coachId,
+          category: gymClass.category,
+          capacity: gymClass.capacity,
+          difficultyLevel: gymClass.difficultyLevel,
+          schedule: gymClass.schedule,
+          room: gymClass.room,
+          imageUrl: gymClass.imageUrl,
+          isActive: gymClass.isActive ?? true,
+          enrolledMembers: [],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          coach: {} as any
+        }
         gymClasses.push(newGymClass)
         callback(null, newGymClass.id)
       } catch (error) {
@@ -53,6 +53,16 @@ export class InMemoryGymClassRepository implements GymClassRepository {
   async getById(id: string): Promise<GymClass | null> {
     await new Promise((resolve) => setTimeout(resolve, 500))
     return gymClasses.find((g) => g.id === id) || null
+  }
+
+  async getByCoachId(coachId: string): Promise<GymClass[]> {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return gymClasses.filter((g) => g.coachId === coachId)
+  }
+
+  async getActiveClasses(): Promise<GymClass[]> {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return gymClasses.filter((g) => g.isActive)
   }
 
   async getAll(): Promise<GymClass[]> {

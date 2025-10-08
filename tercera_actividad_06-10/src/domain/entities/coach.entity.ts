@@ -1,24 +1,22 @@
-import { Role, type ISpeciality } from '../value-objects.js'
-import type { GymClass } from './gym-Class.entity.js'
-import { BaseUser } from './base-user.entity.js'
+import type { ISpeciality } from '../value-objects.js'
+import type { GymClass } from './gym-class.entity.js'
 
-export class Coach extends BaseUser {
+export class Coach {
   constructor(
-    id: string,
-    fullName: string,
-    email: string,
-    phone: string,
-    passwordHash: string,
-    createdAt: Date,
-    updatedAt: Date,
+    public id: string,
+    public fullName: string,
+    public email: string,
+    public phone: string,
+    public password: string,
+    public gender: string,
+    public birthDate: Date,
+    public createdAt: Date = new Date(),
     public specialities: ISpeciality[],
     public isActive: boolean = true,
     public biography: string,
-    public imageUrl: string,
-    public classes: GymClass[],
-    public classesTaught: number = 0,
-    public experienceYears: number = 0,
-  ) {
-    super(id, fullName, email, phone, Role.COACH, passwordHash, createdAt, updatedAt)
-  }
+    public experienceYears: number,
+    public imageUrl?: string,
+    public classes: GymClass[] = [],
+    public updatedAt?: Date,
+  ) {}
 }

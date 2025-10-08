@@ -1,0 +1,10 @@
+// Repository implementations
+export { InMemoryUserRepository } from './user.repository'
+export { InMemoryAdminRepository } from './admin.repository'
+export { InMemoryCoachRepository } from './coach.repository'
+export { InMemoryGymClassRepository } from './gym-class.repository'
+export { InMemoryMachineRepository } from './machine.repository'
+export { InMemoryPlanRepository } from './plan.repository'
+export { InMemoryMembershipRepository } from './membership.repository'
+export { InMemoryPaymentRepository } from './payment.repository'
+export { InMemoryRoutineRepository } from './routine.repository'

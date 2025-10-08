@@ -6,10 +6,11 @@ export class Machine {
     public name: string,
     public description: string,
     public specialities: ISpeciality[],
-    public createdAt: Date,
-    public updatedAt: Date,
-    public imageUrl: string,
+    public createdAt: Date = new Date(),
     public room: IRoom[],
     public status: Status,
+    public routines: string[] = [],
+    public updatedAt?: Date,
+    public imageUrl?: string,
   ) {}
 }

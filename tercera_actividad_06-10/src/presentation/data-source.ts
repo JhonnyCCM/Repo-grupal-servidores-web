@@ -1,19 +1,21 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { GymClassModel } from "../domain/models/gym-class.model";
-import { CoachModel } from "../domain/models/coach.model";
-import { MachineModel } from "../domain/models/machine.model";
+import { config } from "dotenv";
+import { GymClass, Coach, Machine, User, Membership, Payment, Plan, Routine, Admin, Favorite } from "../domain/models";
+
+// Cargar variables de entorno
+config();
 
 export const AppDataSource = new DataSource({
-    type: "postgres",
-    host: "dpg-d3htns95pdvs73fim10g-a.oregon-postgres.render.com", // <-- CORRECCIÓN: Solo el host, sin "postgresql://"
-    port: 5432,
-    username: "gymdemo_user",
-    password: "Xy5t2yPMRhfHYnySepEyyxZqSB6R26fR",
-    database: "gymdemo",
-    synchronize: true,
-    logging: false,
-    entities: [GymClassModel, CoachModel, MachineModel],
+    type: process.env.DB_TYPE as "postgres",
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT || "5432"),
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    synchronize: process.env.NODE_ENV === "development",
+    logging: process.env.NODE_ENV === "development",
+    entities: [GymClass, Coach, Machine, User, Membership, Payment, Plan, Admin, Favorite],
     migrations: [],
     subscribers: [],
     ssl: {

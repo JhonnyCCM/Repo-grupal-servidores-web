@@ -1,4 +1,5 @@
 import type { Coach } from './coach.entity.js'
+import type { User } from './user.entity.js'
 import type { DifficultyLevel, ICategory, IRoom, IScheduleItem } from '../value-objects.js'
 
 export class GymClass {
@@ -6,17 +7,16 @@ export class GymClass {
     public id: string,
     public name: string,
     public description: string,
-    public coach: Coach,
+    public coachID: Coach,
     public category: ICategory,
-    public duration: number,
-    public imageUrl: string,
     public capacity: number,
-    public enrolledMembers: number,
-    public isActive: boolean,
-    public createdAt: Date,
-    public updatedAt: Date,
+    public isActive: boolean = false,
+    public createdAt: Date = new Date(),
     public room: IRoom,
     public difficultyLevel: DifficultyLevel,
     public schedule: IScheduleItem[],
+    public imageUrl?: string,
+    public updatedAt?: Date,
+    public enrolledMembers: User[] = [],
   ) {}
 }

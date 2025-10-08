@@ -1,55 +1,51 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { Role } from "../value-objects";
-import { GymClassModel } from "./gym-class.model";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm"
+import { GymClass } from "./gym-class.model"
 
-@Entity('coaches')
-export class CoachModel {
-    @PrimaryGeneratedColumn()
-    id!: number;
+@Entity("coach")
+export class Coach {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string
 
-    @Column()
-    fullName!: string;
+  @Column()
+  fullName!: string
 
-    @Column({ unique: true })
-    email!: string;
+  @Column({ unique: true })
+  email!: string
 
-    @Column()
-    phone!: string;
+  @Column()
+  phone!: string
 
-    @Column({
-        type: 'enum',
-        enum: Role,
-        default: Role.COACH
-    })
-    role!: Role;
+  @Column()
+  password!: string
+  
+  @Column()
+  gender!: string
 
-    @Column()
-    passwordHash!: string;
+  @Column({ type: "date" })
+  birthDate!: Date
+  
+  @CreateDateColumn()
+  createdAt!: Date
 
-    @Column('json')
-    specialities!: { id: string; name: string; description: string }[];
+  @Column({ type: "simple-array" })
+  specialities!: string[]
+  
+  @Column({ default: true })
+  isActive!: boolean
+  
+  @Column({ type: "text", nullable: true })
+  biography?: string
+  
+  @Column({ default: 0 })
+  experienceYears!: number
+  
+  @Column({ nullable: true })
+  imageUrl?: string
+  
+  @OneToMany(() => GymClass, (gymClass) => gymClass.coach)
+  classes!: GymClass[]
 
-    @Column({ default: true })
-    isActive!: boolean;
+  @UpdateDateColumn()
+  updatedAt!: Date
 
-    @Column()
-    biography!: string;
-
-    @Column()
-    imageUrl!: string;
-
-    @OneToMany(() => GymClassModel, gymClass => gymClass.coach)
-    classes!: GymClassModel[];
-
-    @Column({ default: 0 })
-    classesTaught!: number;
-
-    @Column({ default: 0 })
-    experienceYears!: number;
-
-    @CreateDateColumn()
-    createdAt!: Date;
-
-    @UpdateDateColumn()
-    updatedAt!: Date;
 }

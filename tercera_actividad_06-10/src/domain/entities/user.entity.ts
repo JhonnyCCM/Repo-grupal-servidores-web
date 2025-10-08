@@ -1,18 +1,19 @@
-import { BaseUser } from './base-user.entity.js'
-import { Role } from '../value-objects.js'
+import { IFavoriteItem } from '../value-objects.js'
 
-export class User extends BaseUser {
+export class User {
   constructor(
-    id: string,
-    fullName: string,
-    email: string,
-    phone: string,
-    passwordHash: string,
-    createdAt: Date,
-    updatedAt: Date,
+    public id: string,
+    public fullName: string,
+    public email: string,
+    public phone: string,
+    public gender: string,
+    public birthDate: Date,
+    public password: string,
+    public createdAt: Date = new Date(),
     public membershipType: string,
-    public membershipEndDate: Date,
-  ) {
-    super(id, fullName, email, phone, Role.MEMBER, passwordHash, createdAt, updatedAt)
-  }
+    public isActive: boolean = true,
+    public favorites: IFavoriteItem[] = [],
+    public updatedAt?: Date,
+    public imageUrl?: string,
+  ) {}
 }

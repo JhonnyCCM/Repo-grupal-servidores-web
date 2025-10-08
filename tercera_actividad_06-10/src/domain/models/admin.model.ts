@@ -1,23 +1,19 @@
-import { Entity, Column } from "typeorm"
-import { BaseUser } from "./base-user.model"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm"
 
-@Entity()
-export class Admin extends BaseUser {
-    @Column()
-    department: string
+@Entity("admin")
+export class Admin {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string
 
-    @Column()
-    accessLevel: number
+  @Column({ unique: true })
+  email!: string
 
-    @Column({ type: "simple-array" })
-    permissions: string[]
+  @Column()
+  password!: string
 
-    @Column({ default: true })
-    isActive: boolean
+  @CreateDateColumn()
+  createdAt!: Date
 
-    @Column({ nullable: true })
-    lastLogin?: Date
-
-    @Column({ nullable: true })
-    emergencyContact?: string
+  @UpdateDateColumn()
+  updatedAt!: Date
 }

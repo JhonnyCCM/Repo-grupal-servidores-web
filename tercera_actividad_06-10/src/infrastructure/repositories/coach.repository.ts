@@ -1,29 +1,30 @@
-import { Coach } from '../../domain/entities/coach.entity.js'
-import type { CoachRepository } from '../../domain/repositories/coach.repository.js'
+import { Coach } from '../../domain/models/coach.model'
+import type { CoachRepository } from '../../domain/repositories/coach.repository'
 import { v4 as uuid } from 'uuid'
 
 const coaches: Coach[] = []
 
 export class InMemoryCoachRepository implements CoachRepository {
-  create(coach: Omit<Coach, 'id'>, callback: (error: Error | null, result?: string) => void): void {
+  create(coach: Omit<Coach, 'id' | 'createdAt' | 'updatedAt'>, callback: (error: Error | null, result?: string) => void): void {
     setTimeout(() => {
       try {
-        const newCoach = new Coach(
-          uuid(),
-          coach.fullName,
-          coach.email,
-          coach.phone,
-          coach.passwordHash,
-          coach.createdAt,
-          coach.updatedAt,
-          coach.specialities ?? [],
-          coach.isActive,
-          coach.biography,
-          coach.imageUrl,
-          coach.classes ?? [],
-          coach.classesTaught,
-          coach.experienceYears,
-        )
+        const newCoach: Coach = {
+          id: uuid(),
+          fullName: coach.fullName,
+          email: coach.email,
+          phone: coach.phone,
+          password: coach.password,
+          gender: coach.gender,
+          birthDate: coach.birthDate,
+          imageUrl: coach.imageUrl,
+          isActive: coach.isActive ?? true,
+          specialities: coach.specialities,
+          biography: coach.biography,
+          experienceYears: coach.experienceYears ?? 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          classes: []
+        }
         coaches.push(newCoach)
         callback(null, newCoach.id)
       } catch (error) {
@@ -49,6 +50,11 @@ export class InMemoryCoachRepository implements CoachRepository {
   async getById(id: string): Promise<Coach | null> {
     await new Promise((resolve) => setTimeout(resolve, 500))
     return coaches.find((c) => c.id === id) || null
+  }
+
+  async getByEmail(email: string): Promise<Coach | null> {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return coaches.find((c) => c.email === email) || null
   }
 
   async getAll(): Promise<Coach[]> {

@@ -1,0 +1,10 @@
+// Repository interfaces
+export type { UserRepository } from './user.repository'
+export type { AdminRepository } from './admin.repository'
+export type { CoachRepository } from './coach.repository'
+export type { GymClassRepository } from './gym-class.repository'
+export type { MachineRepository } from './machine.repository'
+export type { PlanRepository } from './plan.repository'
+export type { MembershipRepository } from './membership.repository'
+export type { PaymentRepository } from './payment.repository'
+export type { RoutineRepository } from './routine.repository'

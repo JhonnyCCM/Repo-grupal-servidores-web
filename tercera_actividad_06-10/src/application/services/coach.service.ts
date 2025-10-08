@@ -1,37 +1,63 @@
-import { AppDataSource } from '../../presentation/data-source';
-import { CoachModel } from '../../domain/models/coach.model';
+import { AppDataSource } from '../../presentation/data-source'
+import { Coach } from '../../domain/models/coach.model'
+import { Role } from '../../domain/value-objects'
 
 export class CoachService {
-    private coachRepository = AppDataSource.getRepository(CoachModel);
+    private coachRepository = AppDataSource.getRepository(Coach)
 
-    async createCoach(coachData: Partial<CoachModel>): Promise<CoachModel> {
+    async createCoach(coachData: Partial<Coach>): Promise<Coach> {
         if (!coachData.fullName || !coachData.email) {
-            throw new Error('Full name and email are required');
+            throw new Error('Full name and email are required')
         }
-        const coach = this.coachRepository.create(coachData);
-        return await this.coachRepository.save(coach);
+        
+        // Check if email already exists
+        const existingCoach = await this.coachRepository.findOne({
+            where: { email: coachData.email }
+        })
+        if (existingCoach) {
+            throw new Error('Email already exists')
+        }
+
+        const coach = this.coachRepository.create({
+            ...coachData,
+            role: Role.COACH
+        })
+        return await this.coachRepository.save(coach)
     }
 
-    async updateCoach(id: number, coachData: Partial<CoachModel>): Promise<CoachModel | null> {
-        await this.coachRepository.update(id, coachData);
-        return this.getCoachById(id);
+    async updateCoach(id: string, coachData: Partial<Coach>): Promise<Coach | null> {
+        await this.coachRepository.update(id, coachData)
+        return this.getCoachById(id)
     }
 
-    async getCoachById(id: number): Promise<CoachModel | null> {
+    async getCoachById(id: string): Promise<Coach | null> {
         return await this.coachRepository.findOne({
             where: { id },
             relations: ['classes']
-        });
+        })
     }
 
-    async getAllCoaches(): Promise<CoachModel[]> {
+    async getCoachByEmail(email: string): Promise<Coach | null> {
+        return await this.coachRepository.findOne({
+            where: { email }
+        })
+    }
+
+    async getAllCoaches(): Promise<Coach[]> {
         return await this.coachRepository.find({
             relations: ['classes']
-        });
+        })
     }
 
-    async deleteCoach(id: number): Promise<boolean> {
-        const result = await this.coachRepository.delete(id);
-        return result.affected ? result.affected > 0 : false;
+    async getActiveCoaches(): Promise<Coach[]> {
+        return await this.coachRepository.find({
+            where: { isActive: true },
+            relations: ['classes']
+        })
+    }
+
+    async deleteCoach(id: string): Promise<boolean> {
+        const result = await this.coachRepository.delete(id)
+        return result.affected ? result.affected > 0 : false
     }
 }

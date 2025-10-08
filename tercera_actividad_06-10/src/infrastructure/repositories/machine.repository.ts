@@ -1,27 +1,27 @@
-import { Machine } from '../../domain/entities/machine.entity.js'
-import type { MachineRepository } from '../../domain/repositories/machine.repository.js'
+import { Machine } from '../../domain/models/machine.model'
+import type { MachineRepository } from '../../domain/repositories/machine.repository'
 import { v4 as uuid } from 'uuid'
 
 const machines: Machine[] = []
 
 export class InMemoryMachineRepository implements MachineRepository {
   create(
-    machine: Omit<Machine, 'id'>,
+    machine: Omit<Machine, 'id' | 'createdAt' | 'updatedAt'>,
     callback: (error: Error | null, result?: string) => void,
   ): void {
     setTimeout(() => {
       try {
-        const newMachine = new Machine(
-          uuid(),
-          machine.name,
-          machine.description,
-          machine.specialities ?? [],
-          machine.createdAt,
-          machine.updatedAt,
-          machine.imageUrl,
-          machine.room,
-          machine.status,
-        )
+        const newMachine: Machine = {
+          id: uuid(),
+          name: machine.name,
+          description: machine.description,
+          specialities: machine.specialities,
+          room: machine.room,
+          status: machine.status,
+          imageUrl: machine.imageUrl,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
         machines.push(newMachine)
         callback(null, newMachine.id)
       } catch (error) {
@@ -47,6 +47,11 @@ export class InMemoryMachineRepository implements MachineRepository {
   async getById(id: string): Promise<Machine | null> {
     await new Promise((resolve) => setTimeout(resolve, 500))
     return machines.find((m) => m.id === id) || null
+  }
+
+  async getByStatus(status: string): Promise<Machine[]> {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return machines.filter((m) => m.status === status)
   }
 
   async getAll(): Promise<Machine[]> {

@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm"
-import { Status } from "../value-objects"
+import { DifficultyLevel } from "../value-objects"
 
-@Entity("machine")
-export class Machine {
+@Entity("routine")
+export class Routine {
   @PrimaryGeneratedColumn("uuid")
   id!: string
 
@@ -12,20 +12,17 @@ export class Machine {
   @Column({ type: "text" })
   description!: string
 
-  @Column({ type: "simple-array" })
-  specialities!: string[]
+  @Column()
+  machineId!: string
 
   @Column({ type: "simple-array" })
-  room!: string[]
+  exercises!: string[]
 
   @Column({ type: "simple-array", nullable: true })
-  routines?: string[]
+  animationsUrls?: string[]
 
-  @Column({ type: "enum", enum: Status, default: Status.ACTIVE })
-  status!: Status
-
-  @Column({ nullable: true })
-  imageUrl?: string
+  @Column({ type: "enum", enum: DifficultyLevel })
+  difficulty!: DifficultyLevel
 
   @CreateDateColumn()
   createdAt!: Date
