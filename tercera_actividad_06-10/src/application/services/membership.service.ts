@@ -12,13 +12,11 @@ export class MembershipService {
             throw new Error('User ID and Plan ID are required')
         }
 
-        // Validate plan exists
         const plan = await this.planService.getPlanById(membershipData.planId)
         if (!plan) {
             throw new Error('Plan not found')
         }
 
-        // Check if user already has an active membership
         const existingMembership = await this.getActiveMembershipByUserId(membershipData.userId)
         if (existingMembership) {
             throw new Error('User already has an active membership')

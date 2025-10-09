@@ -10,7 +10,6 @@ export class UserService {
             throw new Error('Full name, email, and password are required')
         }
 
-        // Check if email already exists
         const existingUser = await this.userRepository.findOne({
             where: { email: userData.email }
         })
@@ -18,7 +17,6 @@ export class UserService {
             throw new Error('Email already exists')
         }
 
-        // Hash password
         const hashedPassword = await bcrypt.hash(userData.password, 10)
 
         const user = this.userRepository.create({

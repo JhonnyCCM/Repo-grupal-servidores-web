@@ -14,7 +14,6 @@ export class PaymentService {
             throw new Error('Amount must be greater than 0')
         }
 
-        // Check if transaction ID already exists
         const existingPayment = await this.getPaymentByTransactionId(paymentData.transactionId)
         if (existingPayment) {
             throw new Error('Transaction ID already exists')
@@ -104,13 +103,6 @@ export class PaymentService {
             status: PaymentStatus.REFUNDED
         })
         return result.affected ? result.affected > 0 : false
-    }
-
-    async getPaymentsByGateway(gateway: string): Promise<Payment[]> {
-        return await this.paymentRepository.find({
-            where: { gateway },
-            order: { paidAt: 'DESC' }
-        })
     }
 
     async getPaymentsByMethod(method: string): Promise<Payment[]> {

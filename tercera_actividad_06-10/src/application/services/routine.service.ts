@@ -13,7 +13,7 @@ export class RoutineService {
         const routine = this.routineRepository.create({
             ...routineData,
             exercises: routineData.exercises || [],
-            videoUrls: routineData.videoUrls || []
+            animationsUrls: routineData.animationsUrls || []
         })
         return await this.routineRepository.save(routine)
     }
@@ -64,41 +64,39 @@ export class RoutineService {
             .getMany()
     }
 
-    async getRoutinesWithVideos(): Promise<Routine[]> {
+    async getRoutinesWithAnimations(): Promise<Routine[]> {
         return await this.routineRepository
             .createQueryBuilder('routine')
-            .where('routine.videoUrls IS NOT NULL')
-            .andWhere('JSON_ARRAY_LENGTH(routine.videoUrls) > 0')
-            .orderBy('routine.createdAt', 'DESC')
+            .where('routine.animationsUrls IS NOT NULL')
             .getMany()
     }
 
-    async addVideoToRoutine(routineId: string, videoUrl: string): Promise<boolean> {
+    async addAnimationToRoutine(routineId: string, animationUrl: string): Promise<boolean> {
         const routine = await this.getRoutineById(routineId)
         if (!routine) {
             throw new Error('Routine not found')
         }
 
-        const videoUrls = routine.videoUrls || []
-        if (videoUrls.includes(videoUrl)) {
-            throw new Error('Video URL already exists in routine')
+        const animationsUrls = routine.animationsUrls || []
+        if (animationsUrls.includes(animationUrl)) {
+            throw new Error('Animation URL already exists in routine')
         }
 
-        videoUrls.push(videoUrl)
-        await this.routineRepository.update(routineId, { videoUrls })
+        animationsUrls.push(animationUrl)
+        await this.routineRepository.update(routineId, { animationsUrls })
         return true
     }
 
-    async removeVideoFromRoutine(routineId: string, videoUrl: string): Promise<boolean> {
+    async removeAnimationFromRoutine(routineId: string, animationUrl: string): Promise<boolean> {
         const routine = await this.getRoutineById(routineId)
         if (!routine) {
             throw new Error('Routine not found')
         }
 
-        const videoUrls = routine.videoUrls || []
-        const updatedVideoUrls = videoUrls.filter(url => url !== videoUrl)
+        const animationsUrls = routine.animationsUrls || []
+        const updatedAnimationUrls = animationsUrls.filter(url => url !== animationUrl)
         
-        await this.routineRepository.update(routineId, { videoUrls: updatedVideoUrls })
+        await this.routineRepository.update(routineId, { animationsUrls: updatedAnimationUrls })
         return true
     }
 

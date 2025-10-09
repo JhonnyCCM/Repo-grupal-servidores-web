@@ -1,113 +1,142 @@
-import { AppDataSource } from "../presentation/data-source";
-import { CoachService } from "../application/services/coach.service";
-import { GymClassService } from "../application/services/gym-class.service";
-import { MachineService } from "../application/services/machine.service";
-import { DifficultyLevel, Status } from "../domain/value-objects";
+import { AppDataSource } from './data-source';
+import { Admin } from '../domain/models/admin.model';
+import { Coach } from '../domain/models/coach.model';
+import { User } from '../domain/models/user.model';
+import { Plan } from '../domain/models/plan.model';
+import { Membership } from '../domain/models/membership.model';
+import { GymClass } from '../domain/models/gym-class.model';
+import { Machine } from '../domain/models/machine.model';
+import { Routine } from '../domain/models/routine.model';
+import { Favorite } from '../domain/models/favorite.model';
+import { Payment } from '../domain/models/payment.model';
+import * as bcrypt from 'bcrypt';
+import { DifficultyLevel, MembershipStatus, PaymentStatus, Status } from '../domain/value-objects';
 
-async function main() {
-    try {
-        await AppDataSource.initialize();
-        console.log("¡Conexión a la base de datos establecida!");
+async function seedDatabase() {
+  await AppDataSource.initialize();
 
-    //     const coachService = new CoachService();
-    //     const gymClassService = new GymClassService();
-    //     const machineService = new MachineService();
+  console.log('Seeding database...');
 
-    //     // 1. Crear un entrenador
-    //     console.log("\n--- Creando un entrenador ---");
-    //     const newCoach = await coachService.createCoach({
-    //         fullName: "John Doe",
-    //         email: "john.doe@gym.com",
-    //         phone: "123-456-7890",
-    //         role: Role.COACH,
-    //         biography: "Entrenador profesional con 5 años de experiencia",
-    //         experienceYears: 5,
-    //         specialities: [{ id: "1", name: "Fitness", description: "Entrenamiento físico general" }],
-    //         certifications: ["Certificación A", "Certificación B"],
-    //         socialLinks: { linkedin: "https://linkedin.com/in/johndoe" }
+  // Seed Admins
+  const adminRepository = AppDataSource.getRepository(Admin);
+  const hashedPassword = await bcrypt.hash('admin123', 10);
+  const admin = adminRepository.create({
+    email: 'admin@example.com',
+    password: hashedPassword,
+  });
+  await adminRepository.save(admin);
 
-    //     });
-    //     console.log("Entrenador creado:", newCoach);
+  // Seed Coaches
+  const coachRepository = AppDataSource.getRepository(Coach);
+  const coach = coachRepository.create({
+    fullName: 'John Doe',
+    email: 'john.doe@example.com',
+    phone: '123456789',
+    password: 'coach123',
+    gender: 'Male',
+    birthDate: new Date('1990-01-01'),
+    specialities: ['Yoga', 'Pilates'],
+    biography: 'Experienced yoga and pilates instructor.',
+    experienceYears: 5,
+  });
+  await coachRepository.save(coach);
 
-    //     // 2. Crear una clase con el entrenador
-    //     console.log("\n--- Creando una clase de gimnasio ---");
-    //     const newClass = await gymClassService.createGymClass({
-    //         name: "Yoga Matutino",
-    //         description: "Una clase para empezar el día con energía",
-    //         coachId: newCoach.id,
-    //         schedule: [],
-    //         capacity: 15,
-    //         difficultyLevel: DifficultyLevel.BEGINNER,
-    //         createdAt: new Date(),
-    //         updatedAt: new Date()
-    //     });
-    //     console.log("Clase creada:", newClass);
+  // Seed Users
+  const userRepository = AppDataSource.getRepository(User);
+  const user = userRepository.create({
+    fullName: 'Jane Doe',
+    email: 'jane.doe@example.com',
+    password: 'user123',
+    phone: '987654321',
+    gender: 'Female',
+    birthDate: new Date('1995-05-05'),
+    membershipType: 'Premium',
+  });
+  await userRepository.save(user);
 
-    //     // 3. Crear una máquina
-    //     console.log("\n--- Creando una máquina de ejercicio ---");
-    //     const newMachine = await machineService.createMachine({
-    //         name: "Cinta de Correr Pro",
-    //         description: "Cinta de correr profesional con inclinación automática",
-    //         specialities: [
-    //             { id: "1", name: "Cardio", description: "Ejercicio cardiovascular" }
-    //         ],
-    //         createdAt: new Date(),
-    //         updatedAt: new Date(),
-    //         imageUrl: "https://example.com/treadmill.jpg",
-    //         room: [
-    //             { id: "1", name: "Sala Cardio", description: "Área de cardio", location: "Piso 1", capacity: 20 }
-    //         ],
-    //         status: Status.MAINTENANCE
-    //     });
-    //     console.log("Máquina creada:", newMachine);
+  // Seed Plans
+  const planRepository = AppDataSource.getRepository(Plan);
+  const plan = planRepository.create({
+    name: 'Premium Plan',
+    description: 'Access to all facilities and classes.',
+    price: 99.99,
+    durationInMonths: 1,
+    features: ['All classes', 'All machines', 'Personal trainer'],
+  });
+  await planRepository.save(plan);
 
-    //     // 4. Obtener todos los elementos
-    //     console.log("\n--- Listando todos los elementos ---");
-    //     const allCoaches = await coachService.getAllCoaches();
-    //     console.log("Todos los entrenadores:", allCoaches);
+  // Seed Memberships
+  const membershipRepository = AppDataSource.getRepository(Membership);
+  const membership = membershipRepository.create({
+    userId: user.id,
+    planId: plan.id,
+    planName: plan.name,
+    price: plan.price,
+    startDate: new Date(),
+    endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+    status: MembershipStatus.ACTIVE,
+  });
+  await membershipRepository.save(membership);
 
-    //     const allClasses = await gymClassService.getAllGymClasses();
-    //     console.log("Todas las clases:", allClasses);
+  // Seed Gym Classes
+  const gymClassRepository = AppDataSource.getRepository(GymClass);
+  const gymClass = gymClassRepository.create({
+    name: 'Yoga Class',
+    description: 'A relaxing yoga class.',
+    coachId: coach.id,
+    category: ['Yoga'],
+    capacity: 20,
+    difficultyLevel: DifficultyLevel.BEGINNER,
+    schedule: ['Monday 10:00 AM'],
+    room: ['Room 1'],
+  });
+  await gymClassRepository.save(gymClass);
 
-    //     const allMachines = await machineService.getAllMachines();
-    //     console.log("Todas las máquinas:", allMachines);
+  // Seed Machines
+  const machineRepository = AppDataSource.getRepository(Machine);
+  const machine = machineRepository.create({
+    name: 'Treadmill',
+    description: 'A machine for running or walking.',
+    specialities: ['Cardio'],
+    room: ['Cardio Room'],
+    status: Status.ACTIVE,
+  });
+  await machineRepository.save(machine);
 
-    //     // 5. Actualizar elementos
-    //     console.log("\n--- Actualizando elementos ---");
-    //     const updatedCoach = await coachService.updateCoach(newCoach.id, {
-    //         biography: "Entrenador profesional con 6 años de experiencia y especialización en Yoga"
-    //     });
-    //     console.log("Entrenador actualizado:", updatedCoach);
+  // // Seed Routines
+  // const routineRepository = AppDataSource.getRepository(Routine);
+  // const routine = routineRepository.create({
+  //   name: 'Beginner Treadmill Routine',
+  //   description: 'A simple routine for beginners on the treadmill.',
+  //   machineId: machine.id,
+  //   exercises: ['Walk for 5 minutes', 'Run for 2 minutes'],
+  //   difficulty: DifficultyLevel.BEGINNER,
+  // });
+  // await routineRepository.save(routine);
 
-    //     const updatedClass = await gymClassService.updateGymClass(newClass.id, {
-    //         description: "Una clase de yoga revitalizante para todos los niveles"
-    //     });
-    //     console.log("Clase actualizada:", updatedClass);
+  // Seed Favorites
+  const favoriteRepository = AppDataSource.getRepository(Favorite);
+  const favorite = favoriteRepository.create({
+    userId: user.id,
+    entityType: 'gymClass',
+    entityId: gymClass.id,
+  });
+  await favoriteRepository.save(favorite);
 
-    //     const updatedMachine = await machineService.updateMachine(newMachine.id, {
-    //         status: Status.MAINTENANCE
-    //     });
-    //     console.log("Máquina actualizada:", updatedMachine);
+  // Seed Payments
+  const paymentRepository = AppDataSource.getRepository(Payment);
+  const payment = paymentRepository.create({
+    membershipId: membership.id,
+    method: 'Credit Card',
+    amount: plan.price,
+    transactionId: '1234567890',
+    status: PaymentStatus.COMPLETED,
+  });
+  await paymentRepository.save(payment);
 
-    //     // 6. Eliminar elementos
-    //     console.log("\n--- Eliminando elementos ---");
-    //     await machineService.deleteMachine(newMachine.id);
-    //     console.log("Máquina eliminada");
+  console.log('Database seeded successfully!');
 
-    //     await gymClassService.deleteGymClass(newClass.id);
-    //     console.log("Clase eliminada");
-
-    //     await coachService.deleteCoach(newCoach.id);
-    //     console.log("Entrenador eliminado");
-
-    } catch (error) {
-        console.error("Error durante la ejecución:", error);
-    } finally {
-        if (AppDataSource.isInitialized) {
-            await AppDataSource.destroy();
-            console.log("\nConexión a la base de datos cerrada.");
-        }
-    }
+  await AppDataSource.destroy();
 }
 
-main();
+seedDatabase().catch((error) => console.error('Error seeding database:', error));

@@ -1,6 +1,5 @@
 import { AppDataSource } from '../../presentation/data-source'
 import { Coach } from '../../domain/models/coach.model'
-import { Role } from '../../domain/value-objects'
 
 export class CoachService {
     private coachRepository = AppDataSource.getRepository(Coach)
@@ -10,7 +9,6 @@ export class CoachService {
             throw new Error('Full name and email are required')
         }
         
-        // Check if email already exists
         const existingCoach = await this.coachRepository.findOne({
             where: { email: coachData.email }
         })
@@ -18,10 +16,7 @@ export class CoachService {
             throw new Error('Email already exists')
         }
 
-        const coach = this.coachRepository.create({
-            ...coachData,
-            role: Role.COACH
-        })
+        const coach = this.coachRepository.create(coachData)
         return await this.coachRepository.save(coach)
     }
 

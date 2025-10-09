@@ -5,7 +5,6 @@ export class FavoriteService {
     private favoriteRepository = AppDataSource.getRepository(Favorite)
 
     async addFavorite(userId: string, entityType: 'machine' | 'gymClass' | 'coach', entityId: string): Promise<Favorite> {
-        // Check if favorite already exists
         const existingFavorite = await this.favoriteRepository.findOne({
             where: { userId, entityType, entityId }
         })
