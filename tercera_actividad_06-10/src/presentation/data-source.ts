@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { config } from "dotenv";
-import { GymClass, Coach, Machine, User, Membership, Payment, Plan, Routine, Admin, Favorite } from "../domain/models";
+import { GymClass, Coach, Machine, User, Membership, Payment, Plan, Admin } from "../domain/models";
 
 // Cargar variables de entorno
 config();
@@ -15,7 +15,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_DATABASE,
     synchronize: process.env.NODE_ENV === "development",
     logging: process.env.NODE_ENV === "development",
-    entities: [GymClass, Coach, Machine, User, Membership, Payment, Plan, Admin, Favorite],
+    entities: [GymClass, Coach, Machine, User, Membership, Payment, Plan, Admin],
     migrations: [],
     subscribers: [],
     ssl: {

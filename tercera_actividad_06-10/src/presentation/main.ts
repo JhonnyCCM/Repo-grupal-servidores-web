@@ -6,8 +6,6 @@ import { Plan } from '../domain/models/plan.model';
 import { Membership } from '../domain/models/membership.model';
 import { GymClass } from '../domain/models/gym-class.model';
 import { Machine } from '../domain/models/machine.model';
-import { Routine } from '../domain/models/routine.model';
-import { Favorite } from '../domain/models/favorite.model';
 import { Payment } from '../domain/models/payment.model';
 import * as bcrypt from 'bcrypt';
 import { DifficultyLevel, MembershipStatus, PaymentStatus, Status } from '../domain/value-objects';
@@ -102,26 +100,6 @@ async function seedDatabase() {
     status: Status.ACTIVE,
   });
   await machineRepository.save(machine);
-
-  // // Seed Routines
-  // const routineRepository = AppDataSource.getRepository(Routine);
-  // const routine = routineRepository.create({
-  //   name: 'Beginner Treadmill Routine',
-  //   description: 'A simple routine for beginners on the treadmill.',
-  //   machineId: machine.id,
-  //   exercises: ['Walk for 5 minutes', 'Run for 2 minutes'],
-  //   difficulty: DifficultyLevel.BEGINNER,
-  // });
-  // await routineRepository.save(routine);
-
-  // Seed Favorites
-  const favoriteRepository = AppDataSource.getRepository(Favorite);
-  const favorite = favoriteRepository.create({
-    userId: user.id,
-    entityType: 'gymClass',
-    entityId: gymClass.id,
-  });
-  await favoriteRepository.save(favorite);
 
   // Seed Payments
   const paymentRepository = AppDataSource.getRepository(Payment);

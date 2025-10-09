@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany, OneToMany } from "typeorm"
 import { GymClass } from "./gym-class.model"
-import { Favorite } from "./favorite.model"
 
 @Entity("user")
 export class User {
@@ -36,9 +35,6 @@ export class User {
 
   @ManyToMany(() => GymClass, (gymClass) => gymClass.enrolledMembers)
   enrolledClasses!: GymClass[];
-
-  @OneToMany(() => Favorite, (favorite) => favorite.user)
-  favorites!: Favorite[];
 
   @CreateDateColumn()
   createdAt!: Date

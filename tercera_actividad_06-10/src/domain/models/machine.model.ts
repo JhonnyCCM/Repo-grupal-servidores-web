@@ -18,9 +18,6 @@ export class Machine {
   @Column({ type: "simple-array" })
   room!: string[]
 
-  @Column({ type: "simple-array", nullable: true })
-  routines?: string[]
-
   @Column({ type: "enum", enum: Status, default: Status.ACTIVE })
   status!: Status
 
