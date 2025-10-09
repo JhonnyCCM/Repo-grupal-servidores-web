@@ -19,7 +19,6 @@ export class InMemoryUserRepository implements UserRepository {
           membershipType: user.membershipType,
           imageUrl: user.imageUrl,
           isActive: user.isActive ?? true,
-          favorites: user.favorites,
           enrolledClasses: user.enrolledClasses,
           createdAt: new Date(),
           updatedAt: new Date()
