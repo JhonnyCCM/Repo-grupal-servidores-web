@@ -1,4 +1,4 @@
-import { GymClass } from '../domain/entities/gym-Class.entity.js'
+import { GymClass } from '../domain/entities/gym-class.entity.js'
 import { DifficultyLevel } from '../domain/value-objects.js'
 import { MOCK_COACHES } from './coaches.mock.js'
 
@@ -14,11 +14,7 @@ export const MOCK_GYM_CLASSES: GymClass[] = [
       description: 'Ejercicios para mejorar la dificultad y el balance',
     },
     60,
-    '/img/clases/yoga.jpg',
-    20,
-    15,
     true,
-    new Date('2024-01-20'),
     new Date('2024-01-20'),
     {
       id: 'spec-core-1',
@@ -33,6 +29,8 @@ export const MOCK_GYM_CLASSES: GymClass[] = [
       { day: 'Miércoles', startTime: '07:00', endTime: '08:00' },
       { day: 'Viernes', startTime: '07:00', endTime: '08:00' },
     ],
+    '/img/clases/yoga.jpg',
+    new Date('2024-01-20'),
   ),
   new GymClass(
     'class-2',
@@ -41,11 +39,7 @@ export const MOCK_GYM_CLASSES: GymClass[] = [
     MOCK_COACHES[1], // Carlos Ruiz
     { id: 'spec-3', name: 'CrossFit', description: 'Entrenador certificado en CrossFit' },
     75,
-    '/img/clases/crossfit.jpg',
-    12,
-    10,
     true,
-    new Date('2024-02-01'),
     new Date('2024-02-01'),
     {
       id: 'spec-fuerza-1',
@@ -59,6 +53,8 @@ export const MOCK_GYM_CLASSES: GymClass[] = [
       { day: 'Martes', startTime: '19:00', endTime: '20:15' },
       { day: 'Jueves', startTime: '19:00', endTime: '20:15' },
     ],
+    '/img/clases/crossfit.jpg',
+    new Date('2024-02-01'),
   ),
   new GymClass(
     'class-3',
@@ -67,11 +63,7 @@ export const MOCK_GYM_CLASSES: GymClass[] = [
     MOCK_COACHES[2], // Ana López
     { id: 'spec-5', name: 'Zumba', description: 'Instructora certificada en Zumba' },
     50,
-    '/img/clases/zumba.jpg',
-    25,
-    22,
     true,
-    new Date('2024-02-10'),
     new Date('2024-02-10'),
     {
       id: 'spec-cardio-1',
@@ -85,6 +77,8 @@ export const MOCK_GYM_CLASSES: GymClass[] = [
       { day: 'Miércoles', startTime: '18:30', endTime: '19:20' },
       { day: 'Viernes', startTime: '18:30', endTime: '19:20' },
     ],
+    '/img/clases/zumba.jpg',
+    new Date('2024-02-10'),
   ),
   new GymClass(
     'class-4',
@@ -93,11 +87,7 @@ export const MOCK_GYM_CLASSES: GymClass[] = [
     MOCK_COACHES[0], // María García
     { id: 'spec-2', name: 'Pilates', description: 'Instructor certificado en Pilates' },
     55,
-    '/img/clases/pilates.jpg',
-    18,
-    14,
     true,
-    new Date('2024-02-15'),
     new Date('2024-02-15'),
     {
       id: 'spec-core-2',
@@ -112,6 +102,8 @@ export const MOCK_GYM_CLASSES: GymClass[] = [
       { day: 'Jueves', startTime: '17:00', endTime: '17:55' },
       { day: 'Sábado', startTime: '09:00', endTime: '09:55' },
     ],
+    '/img/clases/pilates.jpg',
+    new Date('2024-02-15'),
   ),
   new GymClass(
     'class-5',
@@ -120,11 +112,7 @@ export const MOCK_GYM_CLASSES: GymClass[] = [
     MOCK_COACHES[3], // Miguel Torres
     { id: 'spec-8', name: 'Boxeo', description: 'Entrenamiento de boxeo sin contacto' },
     60,
-    '/img/clases/box.jpg',
-    15,
-    12,
     true,
-    new Date('2024-03-01'),
     new Date('2024-03-01'),
     {
       id: 'spec-box-1',
@@ -138,6 +126,8 @@ export const MOCK_GYM_CLASSES: GymClass[] = [
       { day: 'Lunes', startTime: '20:00', endTime: '21:00' },
       { day: 'Miércoles', startTime: '20:00', endTime: '21:00' },
     ],
+    '/img/clases/box.jpg',
+    new Date('2024-03-01'),
   ),
   new GymClass(
     'class-6',
@@ -146,11 +136,7 @@ export const MOCK_GYM_CLASSES: GymClass[] = [
     MOCK_COACHES[4], // Laura Fernández
     { id: 'spec-1', name: 'Spinning', description: 'Instructor certificado en Spinning' },
     45,
-    '/img/clases/spinning.jpg',
-    20,
-    18,
     true,
-    new Date('2024-03-05'),
     new Date('2024-03-05'),
     {
       id: 'spec-spinning-1',
@@ -165,5 +151,7 @@ export const MOCK_GYM_CLASSES: GymClass[] = [
       { day: 'Miércoles', startTime: '18:00', endTime: '18:45' },
       { day: 'Viernes', startTime: '18:00', endTime: '18:45' },
     ],
+    '/img/clases/spinning.jpg',
+    new Date('2024-03-05'),
   ),
 ]

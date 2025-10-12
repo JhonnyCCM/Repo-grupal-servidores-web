@@ -4,16 +4,23 @@ export enum DifficultyLevel {
   ADVANCED = 'Avanzado',
 }
 
-export enum Role {
-  ADMIN = 'Administrador',
-  MEMBER = 'Miembro',
-  COACH = 'Entrenador',
-}
-
 export enum Status {
   ACTIVE = 'Disponible',
   INACTIVE = 'No disponible',
   MAINTENANCE = 'En mantenimiento',
+}
+
+export enum MembershipStatus {
+  ACTIVE = 'Activa',
+  INACTIVE = 'Inactiva',
+  EXPIRED = 'Expirada',
+}
+
+export enum PaymentStatus {
+  PENDING = 'Pendiente',
+  COMPLETED = 'Completado',
+  FAILED = 'Fallido',
+  REFUNDED = 'Reembolsado',
 }
 
 export interface IScheduleItem {

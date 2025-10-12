@@ -6,52 +6,47 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/HomeView.vue'),
+      component: () => import('../views/pages/HomeView.vue'),
     },
     {
       path: '/classes',
       name: 'classes',
-      component: () => import('../views/ClassesView.vue'),
+      component: () => import('../views/pages/ClassesView.vue'),
     },
     {
       path: '/machines',
       name: 'machines',
-      component: () => import('../views/MachinesView.vue'),
+      component: () => import('../views/pages/MachinesView.vue'),
     },
     {
       path: '/coaches',
       name: 'coaches',
-      component: () => import('../views/CoachesView.vue'),
-    },
-    {
-      path: '/productos',
-      name: 'productos',
-      component: () => import('../views/ProductsView.vue'),
+      component: () => import('../views/pages/CoachesView.vue'),
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/LoginView.vue'),
+      component: () => import('../views/auth/LoginView.vue'),
     },
     {
       path: '/register',
       name: 'register',
-      component: () => import('../views/RegisterView.vue'),
+      component: () => import('../views/auth/RegisterView.vue'),
     },
     {
       path: '/404',
       name: 'not-found',
-      component: () => import('../views/NotFoundView.vue'),
+      component: () => import('../views/404/NotFoundView.vue'),
     },
     {
       path: '/contact',
       name: 'contact',
-      component: () => import('../views/ContactView.vue'),
+      component: () => import('../views/pages/ContactView.vue'),
     },
     {
       path: '/about',
       name: 'about',
-      component: () => import('../views/AboutView.vue'),
+      component: () => import('../views/pages/AboutView.vue'),
     },
     // Catch all routes that don't exist and redirect to 404
     {

@@ -1,4 +1,3 @@
-// Repository interfaces
 export type { UserRepository } from './user.repository'
 export type { AdminRepository } from './admin.repository'
 export type { CoachRepository } from './coach.repository'

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable, OneToOne, OneToMany } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from "typeorm"
 import { Coach } from "./coach.model"
 import { DifficultyLevel } from "../value-objects"
 import { User } from "./user.model"
@@ -26,21 +26,27 @@ export class GymClass {
 
   @Column()
   capacity!: number
-
+  
+  @Column({ default: true })
+  isActive!: boolean
+  
+  @CreateDateColumn()
+  createdAt!: Date
+  
+  @Column({ type: "simple-array" })
+  room!: string[]
+  
   @Column({ type: "enum", enum: DifficultyLevel, default: DifficultyLevel.BEGINNER })
   difficultyLevel!: DifficultyLevel
 
   @Column({ type: "simple-array" })
   schedule!: string[]
-
-  @Column({ type: "simple-array" })
-  room!: string[]
-
+  
   @Column({ nullable: true })
   imageUrl?: string
-
-  @Column({ default: true })
-  isActive!: boolean
+  
+  @UpdateDateColumn()
+  updatedAt!: Date
 
   @ManyToMany(() => User, (user) => user.enrolledClasses)
   @JoinTable({
@@ -49,24 +55,4 @@ export class GymClass {
     inverseJoinColumn: { name: "userId", referencedColumnName: "id" },
   })
   enrolledMembers!: User[]
-
-  // @ManyToMany(() => User, (user) => user.favorites)
-  // @JoinTable({
-  //   name: "user_favorite_classes",
-  //   joinColumn: {
-  //     name: "gymClassId",
-  //     referencedColumnName: "id"
-  //   },
-  //   inverseJoinColumn: {
-  //     name: "userId",
-  //     referencedColumnName: "id"
-  //   }
-  // })
-  // favoritedByUsers!: User[]
-
-  @CreateDateColumn()
-  createdAt!: Date
-
-  @UpdateDateColumn()
-  updatedAt!: Date
 }

@@ -1,4 +1,4 @@
-import type { IRoom, ISpeciality, Status } from '../value-objects'
+import type { IRoom, ISpeciality, Status } from '../value-objects.js'
 
 export class Machine {
   constructor(
@@ -6,10 +6,10 @@ export class Machine {
     public name: string,
     public description: string,
     public specialities: ISpeciality[],
-    public createdAt: Date,
-    public updatedAt: Date,
-    public imageUrl: string,
+    public createdAt: Date = new Date(),
     public room: IRoom[],
     public status: Status,
+    public updatedAt?: Date,
+    public imageUrl?: string,
   ) {}
 }

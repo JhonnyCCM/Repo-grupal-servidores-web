@@ -69,7 +69,7 @@ async function seedDatabase() {
     userId: user.id,
     planId: plan.id,
     planName: plan.name,
-    price: plan.price,
+    planPrice: plan.price,
     startDate: new Date(),
     endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
     status: MembershipStatus.ACTIVE,

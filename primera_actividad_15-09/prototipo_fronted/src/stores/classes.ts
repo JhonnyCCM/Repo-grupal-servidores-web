@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { GymClass } from '../domain/entities/gym-Class.entity.js'
+import type { GymClass } from '@/domain/entities/gym-class.entity.js'
 import { MOCK_GYM_CLASSES } from '../__mocks__/gym-classes.mock.js'
 import { DifficultyLevel } from '../domain/value-objects.js'
 
@@ -38,7 +38,7 @@ export const useClassesStore = defineStore('classes', () => {
 
   const availableSpots = computed(() => {
     return classes.value.reduce((total, gymClass) => {
-      return total + (gymClass.capacity - gymClass.enrolledMembers)
+      return total + (gymClass.capacity - gymClass.enrolledMembers.length)
     }, 0)
   })
 
@@ -68,7 +68,7 @@ export const useClassesStore = defineStore('classes', () => {
   }
 
   const getClassesByCoach = (coachId: string) => {
-    return classes.value.filter((gymClass) => gymClass.coach.id === coachId)
+    return classes.value.filter((gymClass) => gymClass.coachId.id === coachId)
   }
 
   const getClassesByCategory = (category: string) => {

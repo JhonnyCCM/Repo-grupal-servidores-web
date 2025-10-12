@@ -1,4 +1,3 @@
-// Repository implementations
 export { InMemoryUserRepository } from './user.repository'
 export { InMemoryAdminRepository } from './admin.repository'
 export { InMemoryCoachRepository } from './coach.repository'

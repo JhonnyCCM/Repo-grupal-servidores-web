@@ -15,7 +15,7 @@ export class InMemoryMembershipRepository implements MembershipRepository {
           plan: {} as any,
           planId: membership.planId,
           planName: membership.planName,
-          price: membership.price,
+          planPrice: membership.planPrice,
           status: membership.status,
           startDate: membership.startDate,
           endDate: membership.endDate,

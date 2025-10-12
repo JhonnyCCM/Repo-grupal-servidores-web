@@ -1,7 +1,7 @@
 {
   "name": "practica2",
   "version": "1.0.0",
-  "description": "A continuación se detallan los pasos y requisitos para completar la práctica.",
+  "description": "practica2",
   "main": "src/presentation/main.ts",
   "type": "module",
   "scripts": {
