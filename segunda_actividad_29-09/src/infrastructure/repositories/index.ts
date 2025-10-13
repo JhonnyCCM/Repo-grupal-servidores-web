@@ -1,0 +1,8 @@
+export { InMemoryUserRepository } from './user.repository.js'
+export { InMemoryAdminRepository } from './admin.repository.js'
+export { InMemoryCoachRepository } from './coach.repository.js'
+export { InMemoryGymClassRepository } from './gym-class.repository.js'
+export { InMemoryMachineRepository } from './machine.repository.js'
+export { InMemoryPlanRepository } from './plan.repository.js'
+export { InMemoryMembershipRepository } from './membership.repository.js'
+export { InMemoryPaymentRepository } from './payment.repository.js'

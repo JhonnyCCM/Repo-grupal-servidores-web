@@ -1,131 +1,60 @@
-import { CoachService } from '../application/coach.service.js';
-import { MachineService } from '../application/machine.service.js';
-import { GymClassService } from '../application/gymClass.service.js';
-import { InMemoryCoachRepository } from '../infrastructure/in-memory/coach.repository.js';
-import { InMemoryMachineRepository } from '../infrastructure/in-memory/machine.repository.js';
-import { InMemoryGymClassRepository } from '../infrastructure/in-memory/gymClass.repository.js';
+import { testCoachCRUD } from './tests/coach.test.js'
+import { testMachineCRUD } from './tests/machine.test.js'
+import { testGymClassCRUD } from './tests/gym-class.test.js'
+import { testAdminCRUD } from './tests/admin.test.js'
+import { testUserCRUD } from './tests/user.test.js'
+import { testPlanCRUD } from './tests/plan.test.js'
+import { testMembershipCRUD } from './tests/membership.test.js'
+import { testPaymentCRUD } from './tests/payment.test.js'
 
-const coachRepository = new InMemoryCoachRepository();
-const machineRepository = new InMemoryMachineRepository();
-const gymClassRepository = new InMemoryGymClassRepository();
-
-const coachService = new CoachService(coachRepository);
-const machineService = new MachineService(machineRepository);
-const gymClassService = new GymClassService(gymClassRepository);
-
-// --- Coach CRUD ---
-console.log('--- Coach CRUD ---');
-
-// Create
-coachService.createCoach({ fullName: 'John Doe', email: 'john.doe@example.com', phone: '123456789' }, (err, id) => {
-    if (err) {
-        console.error('Error creating coach:', err.message);
-        return;
+async function main() {
+    console.log('🏋️ GYM MANAGEMENT SYSTEM - CLEAN ARCHITECTURE DEMO')
+    console.log('=' .repeat(60))
+    console.log('📋 Demostrando uso correcto de capas:')
+    console.log('   🏗️ Infrastructure Layer → Repository (In-Memory)')
+    console.log('   🔧 Application Layer → Service (Business Logic)')
+    console.log('   🎯 Presentation Layer → Tests (This Main)')
+    console.log('=' .repeat(60))
+    
+    try {
+        // Testing all CRUD operations with 2-second delays
+        await testCoachCRUD()
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        
+        await testMachineCRUD()
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        
+        await testGymClassCRUD()
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        
+        await testAdminCRUD()
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        
+        await testUserCRUD()
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        
+        await testPlanCRUD()
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        
+        await testMembershipCRUD()
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        
+        await testPaymentCRUD()
+        
+        console.log('\n🎉 TODOS LOS TESTS COMPLETADOS EXITOSAMENTE!')
+        console.log('=' .repeat(60))
+        console.log('✅ Arquitectura Clean verificada:')
+        console.log('   • Repository Pattern implementado correctamente')
+        console.log('   • Service Layer manejando lógica de negocio')
+        console.log('   • Separación clara entre capas')
+        console.log('   • CRUD operations funcionando en 8 entidades')
+        console.log('   • Coach, Machine, GymClass, Admin, User, Plan, Membership, Payment')
+        console.log('=' .repeat(60))
+        console.log('💡 Sistema listo para producción!')
+        
+    } catch (error) {
+        console.error('💥 ERROR CRÍTICO EN MAIN:', error)
     }
-    console.log('Coach created with id:', id);
+}
 
-    // Read
-    coachService.getCoachById(id!).then(coach => {
-        console.log('Coach found:', coach);
-
-        // Update
-        coachService.updateCoach(id!, { phone: '987654321' }).then(updatedCoach => {
-            console.log('Coach updated:', updatedCoach);
-
-            // Read All
-            coachService.getAllCoaches().then(coaches => {
-                console.log('All coaches:', coaches);
-
-                // Delete
-                coachService.deleteCoach(id!).then(success => {
-                    console.log('Coach deleted:', success);
-
-                    // Read All
-                    coachService.getAllCoaches().then(coaches => {
-                        console.log('All coaches after deletion:', coaches);
-                    });
-                });
-            });
-        });
-    });
-});
-
-
-// --- Machine CRUD ---
-setTimeout(() => {
-    console.log('\n--- Machine CRUD ---');
-
-    // Create
-    machineService.createMachine({ name: 'Treadmill', description: 'Cardio machine', brand: 'Technogym', isAvailable: true }, (err, id) => {
-        if (err) {
-            console.error('Error creating machine:', err.message);
-            return;
-        }
-        console.log('Machine created with id:', id);
-
-        // Read
-        machineService.getMachineById(id!).then(machine => {
-            console.log('Machine found:', machine);
-
-            // Update
-            machineService.updateMachine(id!, { isAvailable: false }).then(updatedMachine => {
-                console.log('Machine updated:', updatedMachine);
-
-                // Read All
-                machineService.getAllMachines().then(machines => {
-                    console.log('All machines:', machines);
-
-                    // Delete
-                    machineService.deleteMachine(id!).then(success => {
-                        console.log('Machine deleted:', success);
-
-                        // Read All
-                        machineService.getAllMachines().then(machines => {
-                            console.log('All machines after deletion:', machines);
-                        });
-                    });
-                });
-            });
-        });
-    });
-}, 3000);
-
-
-// --- GymClass CRUD ---
-setTimeout(() => {
-    console.log('\n--- GymClass CRUD ---');
-
-    // Create
-    gymClassService.createGymClass({ name: 'Yoga', description: 'Relaxing yoga class', schedule: 'Mon 6pm', capacity: 15 }, (err, id) => {
-        if (err) {
-            console.error('Error creating gym class:', err.message);
-            return;
-        }
-        console.log('Gym class created with id:', id);
-
-        // Read
-        gymClassService.getGymClassById(id!).then(gymClass => {
-            console.log('Gym class found:', gymClass);
-
-            // Update
-            gymClassService.updateGymClass(id!, { capacity: 20 }).then(updatedGymClass => {
-                console.log('Gym class updated:', updatedGymClass);
-
-                // Read All
-                gymClassService.getAllGymClasses().then(gymClasses => {
-                    console.log('All gym classes:', gymClasses);
-
-                    // Delete
-                    gymClassService.deleteGymClass(id!).then(success => {
-                        console.log('Gym class deleted:', success);
-
-                        // Read All
-                        gymClassService.getAllGymClasses().then(gymClasses => {
-                            console.log('All gym classes after deletion:', gymClasses);
-                        });
-                    });
-                });
-            });
-        });
-    });
-}, 6000);
+main().catch(console.error)

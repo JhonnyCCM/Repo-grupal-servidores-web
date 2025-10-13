@@ -1,0 +1,8 @@
+export type { UserService } from './user.service.js'
+export type { AdminService } from './admin.service.js'
+export type { CoachService } from './coach.service.js'
+export type { GymClassService } from './gym-class.service.js'
+export type { MachineService } from './machine.service.js'
+export type { PlanService } from './plan.service.js'
+export type { MembershipService } from './membership.service.js'
+export type { PaymentService } from './payment.service.js'

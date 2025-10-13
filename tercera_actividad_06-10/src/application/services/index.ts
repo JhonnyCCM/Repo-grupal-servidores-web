@@ -1,4 +1,3 @@
-// Service exports
 export { CoachService } from './coach.service'
 export { MachineService } from './machine.service'
 export { GymClassService } from './gym-class.service'

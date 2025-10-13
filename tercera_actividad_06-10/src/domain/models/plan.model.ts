@@ -19,13 +19,13 @@ export class Plan {
 
   @Column({ type: "simple-array" })
   features!: string[]
+  
+  @CreateDateColumn()
+  createdAt!: Date
+  
+  @UpdateDateColumn()
+  updatedAt!: Date
 
   @Column({ default: true })
   isActive!: boolean
-
-  @CreateDateColumn()
-  createdAt!: Date
-
-  @UpdateDateColumn()
-  updatedAt!: Date
 }

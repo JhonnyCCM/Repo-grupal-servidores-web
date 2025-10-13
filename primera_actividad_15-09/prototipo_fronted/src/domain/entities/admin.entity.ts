@@ -1,16 +1,10 @@
-import { Role } from '../value-objects'
-import { BaseUser } from './base-user.entity'
 
-export class Admin extends BaseUser {
+export class Admin{
   constructor(
-    id: string,
-    fullName: string,
-    email: string,
-    phone: string,
-    passwordHash: string,
-    createdAt: Date,
-    updatedAt: Date,
-  ) {
-    super(id, fullName, email, phone, Role.ADMIN, passwordHash, createdAt, updatedAt)
-  }
+    public id: string,
+    public email: string,
+    public password: string,
+    public createdAt: Date = new Date(),
+    public updatedAt?: Date,
+  ) {}
 }

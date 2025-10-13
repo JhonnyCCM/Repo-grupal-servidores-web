@@ -30,7 +30,7 @@ export class MembershipService {
         const membership = this.membershipRepository.create({
             ...membershipData,
             planName: plan.name,
-            price: plan.price,
+            planPrice: plan.price,
             startDate,
             endDate,
             status: membershipData.status || MembershipStatus.ACTIVE
@@ -110,7 +110,7 @@ export class MembershipService {
             endDate: newEndDate,
             planId: planId,
             planName: plan.name,
-            price: plan.price,
+            planPrice: plan.price,
             status: MembershipStatus.ACTIVE,
             isActive: true
         })

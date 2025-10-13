@@ -1,18 +1,17 @@
-import { BaseUser } from './base-user.entity'
-import { Role } from '../value-objects'
-
-export class User extends BaseUser {
+export class User {
   constructor(
-    id: string,
-    fullName: string,
-    email: string,
-    phone: string,
-    passwordHash: string,
-    createdAt: Date,
-    updatedAt: Date,
+    public id: string,
+    public fullName: string,
+    public email: string,
+    public password: string,
+    public phone: string,
+    public gender: string,
+    public birthDate: Date,
     public membershipType: string,
-    public membershipEndDate: Date,
-  ) {
-    super(id, fullName, email, phone, Role.MEMBER, passwordHash, createdAt, updatedAt)
-  }
+    public createdAt: Date = new Date(),
+    public isActive: boolean = true,
+    public enrolledClasses: string[] = [],
+    public updatedAt?: Date,
+    public imageUrl?: string,
+  ) {}
 }

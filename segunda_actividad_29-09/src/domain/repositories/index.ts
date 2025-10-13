@@ -1,0 +1,8 @@
+export type { UserRepository } from './user.repository.js'
+export type { AdminRepository } from './admin.repository.js'
+export type { CoachRepository } from './coach.repository.js'
+export type { GymClassRepository } from './gym-class.repository.js'
+export type { MachineRepository } from './machine.repository.js'
+export type { PlanRepository } from './plan.repository.js'
+export type { MembershipRepository } from './membership.repository.js'
+export type { PaymentRepository } from './payment.repository.js'

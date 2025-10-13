@@ -15,6 +15,9 @@ export class Machine {
   @Column({ type: "simple-array" })
   specialities!: string[]
 
+  @CreateDateColumn()
+  createdAt!: Date
+
   @Column({ type: "simple-array" })
   room!: string[]
 
@@ -23,9 +26,6 @@ export class Machine {
 
   @Column({ nullable: true })
   imageUrl?: string
-
-  @CreateDateColumn()
-  createdAt!: Date
 
   @UpdateDateColumn()
   updatedAt!: Date

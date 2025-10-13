@@ -11,8 +11,6 @@ export const MOCK_MACHINES: Machine[] = [
       { id: 'spec-resist-1', name: 'Resistencia', description: 'Entrenamiento de resistencia' },
     ],
     new Date('2024-01-10'),
-    new Date('2024-01-10'),
-    '/img/maquinas/caminadora.jpg',
     [
       {
         id: 'room-1',
@@ -30,6 +28,8 @@ export const MOCK_MACHINES: Machine[] = [
       },
     ],
     Status.ACTIVE,
+    new Date('2024-01-10'),
+    '/img/maquinas/caminadora.jpg',
   ),
   new Machine(
     'machine-2',
@@ -40,8 +40,6 @@ export const MOCK_MACHINES: Machine[] = [
       { id: 'spec-musc-1', name: 'Musculación', description: 'Desarrollo muscular' },
     ],
     new Date('2024-01-12'),
-    new Date('2024-09-15'),
-    '/img/maquinas/press_pecho.jpg',
     [
       {
         id: 'room-1',
@@ -52,6 +50,8 @@ export const MOCK_MACHINES: Machine[] = [
       },
     ],
     Status.MAINTENANCE,
+    new Date('2024-09-15'),
+    '/img/maquinas/press_pecho.jpg',
   ),
   new Machine(
     'machine-3',
@@ -66,8 +66,6 @@ export const MOCK_MACHINES: Machine[] = [
       },
     ],
     new Date('2024-02-05'),
-    new Date('2024-02-05'),
-    '/img/maquinas/Eliptica.jpg',
     [
       {
         id: 'room-1',
@@ -85,6 +83,8 @@ export const MOCK_MACHINES: Machine[] = [
       },
     ],
     Status.ACTIVE,
+    new Date('2024-02-05'),
+    '/img/maquinas/Eliptica.jpg',
   ),
   new Machine(
     'machine-4',
@@ -95,8 +95,6 @@ export const MOCK_MACHINES: Machine[] = [
       { id: 'spec-piernas-1', name: 'Tren Inferior', description: 'Ejercicios para piernas' },
     ],
     new Date('2024-01-20'),
-    new Date('2024-01-20'),
-    '/img/maquinas/prensa.jpg',
     [
       {
         id: 'room-1',
@@ -114,6 +112,8 @@ export const MOCK_MACHINES: Machine[] = [
       },
     ],
     Status.ACTIVE,
+    new Date('2024-01-20'),
+    '/img/maquinas/prensa.jpg',
   ),
   new Machine(
     'machine-5',
@@ -124,8 +124,6 @@ export const MOCK_MACHINES: Machine[] = [
       { id: 'spec-funcional-1', name: 'Funcional', description: 'Entrenamiento funcional' },
     ],
     new Date('2024-02-15'),
-    new Date('2024-02-15'),
-    '/img/maquinas/polea.jpg',
     [
       {
         id: 'room-1',
@@ -143,6 +141,8 @@ export const MOCK_MACHINES: Machine[] = [
       },
     ],
     Status.ACTIVE,
+    new Date('2024-02-15'),
+    '/img/maquinas/polea.jpg',
   ),
   new Machine(
     'machine-6',
@@ -153,8 +153,6 @@ export const MOCK_MACHINES: Machine[] = [
       { id: 'spec-spinning-1', name: 'Spinning', description: 'Ciclismo indoor' },
     ],
     new Date('2024-03-01'),
-    new Date('2024-09-20'),
-    '/img/maquinas/spinning.jpg',
     [
       {
         id: 'room-1',
@@ -172,5 +170,7 @@ export const MOCK_MACHINES: Machine[] = [
       },
     ],
     Status.INACTIVE,
+    new Date('2024-09-20'),
+    '/img/maquinas/spinning.jpg',
   ),
 ]
