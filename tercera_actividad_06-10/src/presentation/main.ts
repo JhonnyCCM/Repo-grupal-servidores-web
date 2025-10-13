@@ -15,14 +15,14 @@ async function seedDatabase() {
 
   console.log('Seeding database...');
 
-  // Seed Admins
-  const adminRepository = AppDataSource.getRepository(Admin);
-  const hashedPassword = await bcrypt.hash('admin123', 10);
-  const admin = adminRepository.create({
-    email: 'admin@example.com',
-    password: hashedPassword,
-  });
-  await adminRepository.save(admin);
+//   // Seed Admins
+//   const adminRepository = AppDataSource.getRepository(Admin);
+//   const hashedPassword = await bcrypt.hash('admin123', 10);
+//   const admin = adminRepository.create({
+//     email: 'admin@example.com',
+//     password: hashedPassword,
+//   });
+//   await adminRepository.save(admin);
 
   // Seed Coaches
   const coachRepository = AppDataSource.getRepository(Coach);
