@@ -1,26 +1,63 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateMachineDto } from './dto/create-machine.dto';
 import { UpdateMachineDto } from './dto/update-machine.dto';
+import { Machine } from './entities/machine.entity';
+import { Status } from '../common/enums';
 
 @Injectable()
 export class MachineService {
-  create(createMachineDto: CreateMachineDto) {
-    return 'This action adds a new machine';
+  constructor(
+    @InjectRepository(Machine)
+    private readonly machineRepository: Repository<Machine>,
+  ) {}
+
+  async create(createMachineDto: CreateMachineDto): Promise<Machine> {
+    const machine = this.machineRepository.create(createMachineDto);
+    return await this.machineRepository.save(machine);
   }
 
-  findAll() {
-    return `This action returns all machine`;
+  async findAll(): Promise<Machine[]> {
+    return await this.machineRepository.find({
+      order: { createdAt: 'DESC' },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} machine`;
+  async findOne(id: string): Promise<Machine> {
+    const machine = await this.machineRepository.findOne({
+      where: { id },
+    });
+    
+    if (!machine) {
+      throw new NotFoundException(`Máquina con ID ${id} no encontrada`);
+    }
+    
+    return machine;
   }
 
-  update(id: number, updateMachineDto: UpdateMachineDto) {
-    return `This action updates a #${id} machine`;
+  async update(id: string, updateMachineDto: UpdateMachineDto): Promise<Machine> {
+    const machine = await this.findOne(id);
+    
+    await this.machineRepository.update(id, updateMachineDto);
+    return await this.findOne(id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} machine`;
+  async remove(id: string): Promise<void> {
+    const machine = await this.findOne(id);
+    await this.machineRepository.remove(machine);
+  }
+
+  async findByStatus(status: Status): Promise<Machine[]> {
+    return await this.machineRepository.find({
+      where: { status },
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  async updateStatus(id: string, status: Status): Promise<Machine> {
+    await this.findOne(id);
+    await this.machineRepository.update(id, { status });
+    return await this.findOne(id);
   }
 }
