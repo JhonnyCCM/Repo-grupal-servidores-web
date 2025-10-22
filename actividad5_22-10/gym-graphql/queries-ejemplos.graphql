@@ -1,0 +1,810 @@
+# ============================================
+# COLECCIÓN DE QUERIES Y MUTACIONES - GYM GRAPHQL GATEWAY
+# Proyecto: Sistema de Gestión de Gimnasio
+# Puerto: http://localhost:3002/graphql
+# ============================================
+
+# ============================================
+# CATEGORÍA 1: CONSULTAS DE INFORMACIÓN AGREGADA
+# ============================================
+
+# 1.1 Dashboard General del Gimnasio
+# Combina información de múltiples entidades
+query DashboardSummary {
+  dashboardSummary
+}
+
+# 1.2 Membresías Activas con Relaciones (Field Resolvers)
+query MembershipConRelaciones {
+  activeMemberships {
+    id
+    status
+    startDate
+    endDate
+    user {
+      id
+      firstName
+      lastName
+      email
+      role
+    }
+    plan {
+      id
+      name
+      description
+      price
+      durationInMonths
+      features
+      isActive
+    }
+  }
+}
+
+# 1.3 Inscripciones con Detalles Completos (Field Resolvers)
+query InscripcionesCompletas {
+  classEnrollments {
+    id
+    enrollmentDate
+    user {
+      id
+      firstName
+      lastName
+      email
+    }
+    gymClass {
+      id
+      name
+      description
+      difficulty
+    }
+  }
+}
+
+# 1.4 Pagos con Relaciones (Field Resolvers)
+query PagosConRelaciones {
+  payments {
+    id
+    amount
+    method
+    status
+    transactionId
+    paidAt
+    user {
+      firstName
+      lastName
+      email
+    }
+    membership {
+      status
+      startDate
+      plan {
+        name
+        price
+      }
+    }
+  }
+}
+
+# ============================================
+# CATEGORÍA 2: CONSULTAS DE ANÁLISIS Y MÉTRICAS
+# ============================================
+
+# 2.1 Estadísticas de Usuarios
+query EstadisticasUsuarios {
+  userStats {
+    totalUsers
+    activeUsers
+    inactiveUsers
+    adminUsers
+    regularUsers
+    coachUsers
+  }
+}
+
+# 2.2 Estadísticas de Clases
+query EstadisticasClases {
+  classStats {
+    totalClasses
+    activeClasses
+    beginnerClasses
+    intermediateClasses
+    advancedClasses
+    classesWithoutCoach
+  }
+}
+
+# 2.3 Estadísticas de Equipamiento
+query EstadisticasEquipamiento {
+  equipmentStats {
+    totalEquipment
+    availableEquipment
+    inactiveEquipment
+    maintenanceEquipment
+  }
+}
+
+# 2.4 Estadísticas de Pagos
+query EstadisticasPagos {
+  paymentStats
+}
+
+# 2.5 Dashboard Completo con Todas las Métricas
+query DashboardCompleto {
+  summary: dashboardSummary
+  
+  users: userStats {
+    totalUsers
+    activeUsers
+    inactiveUsers
+  }
+  
+  classes: classStats {
+    totalClasses
+    activeClasses
+  }
+  
+  equipment: equipmentStats {
+    totalEquipment
+    availableEquipment
+    maintenanceEquipment
+  }
+}
+
+# ============================================
+# CATEGORÍA 3: CONSULTAS DE BÚSQUEDA AVANZADA
+# ============================================
+
+# 3.1 Planes por Rango de Precio
+query PlanesPorPrecio {
+  planesEconomicos: plansByPriceRange(minPrice: 0, maxPrice: 60) {
+    id
+    name
+    price
+    durationInMonths
+    features
+  }
+  
+  planesPremium: plansByPriceRange(minPrice: 100, maxPrice: 1000) {
+    id
+    name
+    price
+    durationInMonths
+    features
+  }
+}
+
+# 3.2 Pagos Completados vs Pendientes (Filtros por Estado)
+query PagosPorEstado {
+  completados: completedPayments {
+    id
+    amount
+    transactionId
+    paidAt
+    method
+    user {
+      firstName
+      lastName
+    }
+  }
+  
+  pendientes: pendingPayments {
+    id
+    amount
+    status
+    user {
+      firstName
+      lastName
+      email
+    }
+  }
+}
+
+# 3.3 Inscripciones por Usuario (Búsqueda Parametrizada)
+# IMPORTANTE: Reemplaza "UUID-DEL-USUARIO" con un ID real de tu base de datos
+query InscripcionesPorUsuario {
+  enrollmentsByUser(userId: "UUID-DEL-USUARIO") {
+    id
+    enrollmentDate
+    gymClass {
+      name
+      description
+      difficulty
+    }
+  }
+}
+
+# 3.4 Inscripciones por Clase (Búsqueda Parametrizada)
+# IMPORTANTE: Reemplaza "UUID-DE-LA-CLASE" con un ID real de tu base de datos
+query InscripcionesPorClase {
+  enrollmentsByClass(classId: "UUID-DE-LA-CLASE") {
+    id
+    enrollmentDate
+    user {
+      firstName
+      lastName
+      email
+    }
+  }
+}
+
+# 3.5 Membresías Expiradas
+query MembresiasExpiradas {
+  expiredMemberships {
+    id
+    status
+    endDate
+    user {
+      firstName
+      lastName
+      email
+    }
+    plan {
+      name
+    }
+  }
+}
+
+# ============================================
+# QUERIES BÁSICAS - TODAS LAS ENTIDADES
+# ============================================
+
+# --- USUARIOS ---
+query TodosLosUsuarios {
+  users {
+    id
+    firstName
+    lastName
+    email
+    role
+    isActive
+  }
+}
+
+query UsuarioPorId {
+  user(id: "UUID-AQUI") {
+    id
+    firstName
+    lastName
+    email
+    role
+    isActive
+  }
+}
+
+# --- ENTRENADORES ---
+query TodosLosEntrenadores {
+  coaches {
+    id
+    name
+    email
+    specialty
+    isActive
+  }
+}
+
+# --- CLASES ---
+query TodasLasClases {
+  gymClasses {
+    id
+    name
+    description
+    difficulty
+    isActive
+  }
+}
+
+query ClasesActivas {
+  activeClasses {
+    id
+    name
+    difficulty
+  }
+}
+
+# --- EQUIPAMIENTO ---
+query TodoElEquipamiento {
+  equipment {
+    id
+    name
+    description
+    status
+  }
+}
+
+query EquipamientoDisponible {
+  availableEquipment {
+    id
+    name
+    status
+  }
+}
+
+# --- PLANES ---
+query TodosLosPlanes {
+  plans {
+    id
+    name
+    description
+    price
+    durationInMonths
+    features
+    isActive
+  }
+}
+
+query PlanesActivos {
+  activePlans {
+    id
+    name
+    price
+    durationInMonths
+    features
+  }
+}
+
+# --- SALAS ---
+query TodasLasSalas {
+  rooms {
+    id
+    name
+    description
+    capacity
+  }
+}
+
+query SalasDisponibles {
+  availableRooms(minCapacity: 10) {
+    id
+    name
+    capacity
+  }
+}
+
+# --- HORARIOS ---
+query TodosLosHorarios {
+  schedules {
+    id
+    name
+    startTime
+    endTime
+  }
+}
+
+# --- MEMBRESÍAS ---
+query TodasLasMembresias {
+  memberships {
+    id
+    status
+    startDate
+    endDate
+  }
+}
+
+# ============================================
+# MUTACIONES - CREAR ENTIDADES
+# ============================================
+
+# --- CREAR PLAN ---
+mutation CrearPlanBasico {
+  createPlan(createPlanInput: {
+    name: "Plan Básico"
+    description: "Acceso al gimnasio en horario normal"
+    price: 50.0
+    durationInMonths: 1
+    features: ["Acceso al gimnasio", "Casilleros", "Ducha"]
+    isActive: true
+  }) {
+    id
+    name
+    price
+    durationInMonths
+    features
+  }
+}
+
+mutation CrearPlanPremium {
+  createPlan(createPlanInput: {
+    name: "Plan Premium Anual"
+    description: "Acceso completo con beneficios exclusivos"
+    price: 599.99
+    durationInMonths: 12
+    features: [
+      "Acceso ilimitado 24/7",
+      "Clases grupales incluidas",
+      "Entrenador personal 2 veces/semana",
+      "Acceso a zona VIP",
+      "Descuento en tienda"
+    ]
+    isActive: true
+  }) {
+    id
+    name
+    price
+    durationInMonths
+    features
+  }
+}
+
+mutation CrearPlanEstudiante {
+  createPlan(createPlanInput: {
+    name: "Plan Estudiante"
+    description: "Descuento especial para estudiantes"
+    price: 35.0
+    durationInMonths: 1
+    features: [
+      "Acceso de 6am a 4pm",
+      "Casilleros",
+      "1 clase grupal por semana"
+    ]
+    isActive: true
+  }) {
+    id
+    name
+    price
+  }
+}
+
+# --- CREAR SALA ---
+mutation CrearSala {
+  createRoom(createRoomInput: {
+    name: "Sala Principal"
+    description: "Sala amplia para clases grupales"
+    capacity: 40
+  }) {
+    id
+    name
+    description
+    capacity
+  }
+}
+
+mutation CrearSalaSpinning {
+  createRoom(createRoomInput: {
+    name: "Sala de Spinning"
+    description: "Sala equipada con bicicletas estáticas"
+    capacity: 25
+  }) {
+    id
+    name
+    capacity
+  }
+}
+
+# --- CREAR HORARIO ---
+mutation CrearHorarioMatutino {
+  createSchedule(createScheduleInput: {
+    name: "Horario Matutino"
+    startTime: "06:00"
+    endTime: "12:00"
+  }) {
+    id
+    name
+    startTime
+    endTime
+  }
+}
+
+mutation CrearHorarioVespertino {
+  createSchedule(createScheduleInput: {
+    name: "Horario Vespertino"
+    startTime: "14:00"
+    endTime: "22:00"
+  }) {
+    id
+    name
+    startTime
+    endTime
+  }
+}
+
+# --- CREAR MEMBRESÍA ---
+# IMPORTANTE: Reemplaza los UUIDs con IDs reales de tu base de datos
+mutation CrearMembresia {
+  createMembership(createMembershipInput: {
+    userId: "UUID-DEL-USUARIO"
+    planId: "UUID-DEL-PLAN"
+    status: ACTIVE
+    startDate: "2025-01-01"
+    endDate: "2026-01-01"
+  }) {
+    id
+    status
+    startDate
+    endDate
+    user {
+      firstName
+      lastName
+      email
+    }
+    plan {
+      name
+      price
+    }
+  }
+}
+
+# --- CREAR PAGO ---
+# IMPORTANTE: Reemplaza los UUIDs con IDs reales
+mutation CrearPago {
+  createPayment(createPaymentInput: {
+    userId: "UUID-DEL-USUARIO"
+    membershipId: "UUID-DE-LA-MEMBRESIA"
+    amount: 50.0
+    method: CREDIT_CARD
+    status: COMPLETED
+    transactionId: "TXN-2025-001"
+    paidAt: "2025-01-15T10:30:00Z"
+  }) {
+    id
+    amount
+    method
+    status
+    transactionId
+    user {
+      firstName
+      lastName
+    }
+  }
+}
+
+# --- CREAR INSCRIPCIÓN A CLASE ---
+# IMPORTANTE: Reemplaza los UUIDs con IDs reales
+mutation CrearInscripcion {
+  createClassEnrollment(createClassEnrollmentInput: {
+    userId: "UUID-DEL-USUARIO"
+    classId: "UUID-DE-LA-CLASE"
+    enrollmentDate: "2025-01-20"
+  }) {
+    id
+    enrollmentDate
+    user {
+      firstName
+      lastName
+    }
+    gymClass {
+      name
+    }
+  }
+}
+
+# ============================================
+# MUTACIONES - ACTUALIZAR ENTIDADES
+# ============================================
+
+# --- ACTUALIZAR PLAN ---
+mutation ActualizarPlan {
+  updatePlan(
+    id: "UUID-DEL-PLAN"
+    updatePlanInput: {
+      price: 55.0
+      isActive: true
+    }
+  ) {
+    id
+    name
+    price
+    isActive
+  }
+}
+
+# --- ACTUALIZAR SALA ---
+mutation ActualizarSala {
+  updateRoom(
+    id: "UUID-DE-LA-SALA"
+    updateRoomInput: {
+      capacity: 50
+      description: "Sala renovada con mejor equipamiento"
+    }
+  ) {
+    id
+    name
+    capacity
+    description
+  }
+}
+
+# --- ACTUALIZAR MEMBRESÍA ---
+mutation ActualizarMembresia {
+  updateMembership(
+    id: "UUID-DE-LA-MEMBRESIA"
+    updateMembershipInput: {
+      status: SUSPENDED
+    }
+  ) {
+    id
+    status
+  }
+}
+
+# ============================================
+# MUTACIONES - ELIMINAR ENTIDADES
+# ============================================
+
+mutation EliminarPlan {
+  removePlan(id: "UUID-DEL-PLAN")
+}
+
+mutation EliminarSala {
+  removeRoom(id: "UUID-DE-LA-SALA")
+}
+
+mutation EliminarHorario {
+  removeSchedule(id: "UUID-DEL-HORARIO")
+}
+
+mutation EliminarMembresia {
+  removeMembership(id: "UUID-DE-LA-MEMBRESIA")
+}
+
+mutation EliminarPago {
+  removePayment(id: "UUID-DEL-PAGO")
+}
+
+mutation EliminarInscripcion {
+  removeClassEnrollment(id: "UUID-DE-LA-INSCRIPCION")
+}
+
+# ============================================
+# QUERIES AVANZADAS CON ALIAS
+# ============================================
+
+# Query con múltiples alias para comparaciones
+query ComparacionPlanes {
+  economicos: plansByPriceRange(minPrice: 0, maxPrice: 50) {
+    id
+    name
+    price
+  }
+  
+  medios: plansByPriceRange(minPrice: 51, maxPrice: 100) {
+    id
+    name
+    price
+  }
+  
+  premium: plansByPriceRange(minPrice: 101, maxPrice: 1000) {
+    id
+    name
+    price
+  }
+}
+
+# Query combinando estadísticas y listas
+query VistaEjecutiva {
+  # Resumen general
+  resumen: dashboardSummary
+  
+  # Métricas
+  metricas: userStats {
+    totalUsers
+    activeUsers
+  }
+  
+  # Planes activos
+  planes: activePlans {
+    name
+    price
+  }
+  
+  # Membresías activas
+  membresías: activeMemberships {
+    status
+    user {
+      firstName
+      lastName
+    }
+    plan {
+      name
+    }
+  }
+}
+
+# ============================================
+# QUERIES CON VARIABLES (Para usar en el panel de Variables)
+# ============================================
+
+# Query con variable para ID
+query ObtenerPlanPorId($planId: ID!) {
+  plan(id: $planId) {
+    id
+    name
+    price
+    durationInMonths
+    features
+  }
+}
+
+# Variables para la query anterior:
+# {
+#   "planId": "tu-uuid-aqui"
+# }
+
+# Query con variables para rango de precios
+query BuscarPlanesPorPrecio($minPrice: Float!, $maxPrice: Float!) {
+  plansByPriceRange(minPrice: $minPrice, maxPrice: $maxPrice) {
+    id
+    name
+    price
+    features
+  }
+}
+
+# Variables:
+# {
+#   "minPrice": 30.0,
+#   "maxPrice": 100.0
+# }
+
+# ============================================
+# QUERIES PARA TESTING PASO A PASO
+# ============================================
+
+# PASO 1: Verificar que el servidor esté funcionando
+query TestConexion {
+  dashboardSummary
+}
+
+# PASO 2: Crear un plan de prueba
+mutation TestCrearPlan {
+  createPlan(createPlanInput: {
+    name: "Plan de Prueba"
+    price: 50.0
+    durationInMonths: 1
+    isActive: true
+  }) {
+    id
+    name
+    price
+  }
+}
+
+# PASO 3: Listar planes para verificar creación
+query TestListarPlanes {
+  plans {
+    id
+    name
+    price
+  }
+}
+
+# PASO 4: Verificar estadísticas
+query TestEstadisticas {
+  userStats {
+    totalUsers
+  }
+  classStats {
+    totalClasses
+  }
+}
+
+# PASO 5: Probar Field Resolvers
+query TestFieldResolvers {
+  activeMemberships {
+    id
+    user {
+      firstName
+      lastName
+    }
+    plan {
+      name
+    }
+  }
+}
+
+# ============================================
+# NOTAS IMPORTANTES
+# ============================================
+#
+# 1. Reemplaza todos los "UUID-AQUI" con IDs reales de tu base de datos
+# 2. Para obtener UUIDs reales, primero ejecuta queries de listado
+# 3. Las fechas deben estar en formato ISO 8601: "2025-01-01" o "2025-01-01T10:30:00Z"
+# 4. Los enums válidos son:
+#    - UserRole: ADMIN, USER, COACH
+#    - MembershipStatus: ACTIVE, INACTIVE, SUSPENDED, EXPIRED
+#    - PaymentStatus: PENDING, COMPLETED, FAILED, REFUNDED
+#    - PaymentMethod: CREDIT_CARD, DEBIT_CARD, CASH, BANK_TRANSFER
+#    - DifficultyLevel: BEGINNER, INTERMEDIATE, ADVANCED
+# 5. Para probar en Apollo Playground: http://localhost:3002/graphql
+# 6. Asegúrate de que el servidor REST esté corriendo en puerto 3001
+#
+# ============================================
