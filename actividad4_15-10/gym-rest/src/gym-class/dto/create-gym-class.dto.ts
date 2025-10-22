@@ -1,67 +1,80 @@
-import { IsString, IsArray, IsEnum, IsBoolean, IsNumber, IsOptional, IsNotEmpty, IsUUID, MinLength, MaxLength, Min } from 'class-validator';
+import { IsString, IsOptional, IsEnum, IsUUID, IsBoolean, MinLength, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { DifficultyLevel } from '../../common/enums';
-import type { ICategory, IRoom, IScheduleItem } from '../../common/enums';
+import { DifficultyLevel } from 'src/common/enums';
 
 export class CreateGymClassDto {
-  @ApiProperty({ description: 'Nombre de la clase', example: 'Yoga Matutino' })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(2)
-  @MaxLength(255)
+  @ApiProperty({
+    description: 'Nombre de la clase de gimnasio',
+    example: 'Yoga para principiantes',
+    minLength: 2,
+    maxLength: 200
+  })
+  @IsString({ message: 'El nombre debe ser una cadena de texto' })
+  @MinLength(2, { message: 'El nombre debe tener al menos 2 caracteres' })
+  @MaxLength(200, { message: 'El nombre no puede exceder 200 caracteres' })
   name: string;
 
-  @ApiProperty({ description: 'Descripción de la clase', example: 'Clase de yoga relajante para comenzar el día...' })
-  @IsString()
-  @IsNotEmpty()
-  description: string;
-
-  @ApiProperty({ 
-    description: 'Categoría de la clase',
-    example: { id: '1', name: 'Fitness', description: 'Clases de ejercicio físico' }
+  @ApiProperty({
+    description: 'Descripción de la clase',
+    example: 'Clase de yoga diseñada especialmente para principiantes...',
+    required: false
   })
-  @IsNotEmpty()
-  category: ICategory;
+  @IsOptional()
+  @IsString({ message: 'La descripción debe ser una cadena de texto' })
+  description?: string;
 
-  @ApiProperty({ description: 'Capacidad máxima de la clase', example: 20 })
-  @IsNumber()
-  @IsNotEmpty()
-  @Min(1)
-  capacity: number;
-
-  @ApiProperty({ 
-    description: 'Sala donde se realiza la clase',
-    example: { id: '1', name: 'Sala A', description: 'Sala principal', location: 'Piso 1', capacity: 30 }
+  @ApiProperty({
+    description: 'ID del entrenador asignado a la clase',
+    example: '123e4567-e89b-12d3-a456-426614174000'
   })
-  @IsNotEmpty()
-  room: IRoom;
-
-  @ApiProperty({ description: 'Nivel de dificultad de la clase', enum: DifficultyLevel })
-  @IsEnum(DifficultyLevel)
-  @IsNotEmpty()
-  difficultyLevel: DifficultyLevel;
-
-  @ApiProperty({ 
-    description: 'Horarios de la clase',
-    example: [{ day: 'Lunes', startTime: '08:00', endTime: '09:00' }]
-  })
-  @IsArray()
-  @IsNotEmpty()
-  schedule: IScheduleItem[];
-
-  @ApiProperty({ description: 'ID del entrenador asignado' })
-  @IsUUID()
-  @IsNotEmpty()
+  @IsUUID('4', { message: 'El ID del entrenador debe ser un UUID válido' })
   coachId: string;
 
-  @ApiProperty({ description: 'URL de la imagen de la clase', required: false })
+  @ApiProperty({
+    description: 'Nivel de dificultad de la clase',
+    enum: DifficultyLevel,
+    example: DifficultyLevel.BEGINNER,
+    default: DifficultyLevel.BEGINNER,
+    required: false
+  })
   @IsOptional()
-  @IsString()
-  @MaxLength(500)
+  @IsEnum(DifficultyLevel, { message: 'El nivel de dificultad debe ser uno de los valores válidos: Principiante, Intermedio, Avanzado' })
+  difficultyLevel?: DifficultyLevel;
+
+  @ApiProperty({
+    description: 'URL de la imagen de la clase',
+    example: 'https://example.com/class-photo.jpg',
+    required: false
+  })
+  @IsOptional()
+  @IsString({ message: 'La URL de la imagen debe ser una cadena de texto' })
   imageUrl?: string;
 
-  @ApiProperty({ description: 'Estado activo de la clase', default: false })
+  @ApiProperty({
+    description: 'ID del horario asignado a la clase',
+    example: '123e4567-e89b-12d3-a456-426614174001',
+    required: false
+  })
   @IsOptional()
-  @IsBoolean()
-  isActive?: boolean = false;
+  @IsUUID('4', { message: 'El ID del horario debe ser un UUID válido' })
+  scheduleId?: string;
+
+  @ApiProperty({
+    description: 'ID del salón asignado a la clase',
+    example: '123e4567-e89b-12d3-a456-426614174002',
+    required: false
+  })
+  @IsOptional()
+  @IsUUID('4', { message: 'El ID del salón debe ser un UUID válido' })
+  roomId?: string;
+
+  @ApiProperty({
+    description: 'Estado activo de la clase',
+    example: true,
+    default: true,
+    required: false
+  })
+  @IsOptional()
+  @IsBoolean({ message: 'El estado activo debe ser un valor booleano' })
+  isActive?: boolean;
 }

@@ -1,49 +1,41 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { DifficultyLevel } from '../../common/enums';
-import type { ICategory, IRoom, IScheduleItem } from '../../common/enums';
-import { Coach } from '../../coach/entities/coach.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { DifficultyLevel } from "src/common/enums";
 
 @Entity('gym_classes')
 export class GymClass {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
-  @Column({ length: 255 })
-  name: string;
+    @CreateDateColumn()
+    createdAt: Date;
 
-  @Column({ type: 'text' })
-  description: string;
+    @UpdateDateColumn()
+    updatedAt: Date;
 
-  @Column({ type: 'json' })
-  category: ICategory;
+    @Column({ length: 200 })
+    name: string;
 
-  @Column({ type: 'integer' })
-  capacity: number;
+    @Column('text', { nullable: true })
+    description: string;
 
-  @Column({ name: 'is_active', default: false })
-  isActive: boolean;
+    @Column('uuid')
+    coachId: string;
 
-  @Column({ type: 'json' })
-  room: IRoom;
+    @Column({
+        type: 'varchar',
+        default: DifficultyLevel.BEGINNER
+    })
+    difficultyLevel: DifficultyLevel;
 
-  @Column({ name: 'difficulty_level', type: 'varchar', length: 50 })
-  difficultyLevel: DifficultyLevel;
+    @Column({ default: true })
+    isActive: boolean;
 
-  @Column({ type: 'json' })
-  schedule: IScheduleItem[];
+    @Column({ nullable: true })
+    imageUrl: string;
 
-  @Column({ name: 'image_url', nullable: true, length: 500 })
-  imageUrl?: string;
+    @Column('uuid', { nullable: true })
+    scheduleId: string;
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
-
-  @ManyToOne(() => Coach, (coach) => coach.classes)
-  coach: Coach;
-
-  @Column({ name: 'coach_id' })
-  coachId: string;
+    @Column('uuid', { nullable: true })
+    roomId: string;
 }

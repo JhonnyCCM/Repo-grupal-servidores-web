@@ -22,8 +22,15 @@ async function bootstrap() {
     .setDescription('API REST para gestión de gimnasio')
     .setVersion('1.0')
     .addTag('coaches', 'Operaciones relacionadas con entrenadores')
-    .addTag('machines', 'Operaciones relacionadas con máquinas')
+    .addTag('equipments', 'Operaciones relacionadas con equipos')
     .addTag('gym-classes', 'Operaciones relacionadas con clases de gimnasio')
+    .addTag('users', 'Operaciones relacionadas con usuarios')
+    .addTag('plans', 'Operaciones relacionadas con planes de membresía')
+    .addTag('memberships', 'Operaciones relacionadas con membresías')
+    .addTag('payments', 'Operaciones relacionadas con pagos')
+    .addTag('categories', 'Operaciones relacionadas con categorías')
+    .addTag('rooms', 'Operaciones relacionadas con salones')
+    .addTag('schedules', 'Operaciones relacionadas con horarios')
     .build();
   
   const document = SwaggerModule.createDocument(app, config);

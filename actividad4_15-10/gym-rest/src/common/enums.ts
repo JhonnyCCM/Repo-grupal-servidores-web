@@ -10,28 +10,31 @@ export enum Status {
   MAINTENANCE = 'En mantenimiento',
 }
 
-export interface IScheduleItem {
-  readonly day: string;
-  readonly startTime: string;
-  readonly endTime: string;
+export enum MembershipStatus {
+  ACTIVE = 'Activa',
+  INACTIVE = 'Inactiva',
+  EXPIRED = 'Expirada',
 }
 
-export interface ISpeciality {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
+export enum PaymentMethod {
+    CREDIT_CARD = 'credit_card',
+    DEBIT_CARD = 'debit_card',
+    CASH = 'cash',
+    BANK_TRANSFER = 'bank_transfer',
+    PAYPAL = 'paypal',
+    STRIPE = 'stripe',
+    MERCADOPAGO = 'mercadopago'
 }
 
-export interface IRoom {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly location: string;
-  readonly capacity: number;
+export enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+  COACH = 'coach',
 }
 
-export interface ICategory {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
+export enum PaymentStatus {
+  PENDING = 'Pendiente',
+  COMPLETED = 'Completado',
+  FAILED = 'Fallido',
+  REFUNDED = 'Reembolsado',
 }

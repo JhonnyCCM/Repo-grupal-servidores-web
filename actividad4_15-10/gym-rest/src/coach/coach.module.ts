@@ -8,6 +8,6 @@ import { Coach } from './entities/coach.entity';
   imports: [TypeOrmModule.forFeature([Coach])],
   controllers: [CoachController],
   providers: [CoachService],
-  exports: [CoachService], // Exportamos el servicio para usarlo en otros módulos
+  exports: [CoachService],
 })
 export class CoachModule {}
