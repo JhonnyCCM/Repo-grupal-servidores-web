@@ -2,6 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Category {
+  createdAt: String
+  description: String
+  id: ID!
+  name: String!
+  updatedAt: String
+}
+
 type ClassEnrollment {
   classId: ID!
   createdAt: String
@@ -25,7 +33,7 @@ type ClassStats {
 type Coach {
   biography: String
   classes: [GymClass!]!
-  createdAt: DateTime!
+  createdAt: String
   email: String!
   experienceYears: Int!
   firstName: String!
@@ -34,7 +42,12 @@ type Coach {
   isActive: Boolean!
   lastName: String!
   specialities: [String!]
-  updatedAt: DateTime!
+  updatedAt: String
+}
+
+input CreateCategoryInput {
+  description: String
+  name: String!
 }
 
 input CreateClassEnrollmentInput {
@@ -54,11 +67,21 @@ input CreateCoachInput {
   specialities: [String!]
 }
 
+input CreateEquipmentCategoryInput {
+  categoryId: String!
+  equipmentId: String!
+}
+
 input CreateEquipmentInput {
   description: String
   imageUrl: String
   name: String!
   status: EquipmentStatus! = ACTIVE
+}
+
+input CreateGymClassCategoryInput {
+  categoryId: String!
+  classId: String!
 }
 
 input CreateGymClassInput {
@@ -130,13 +153,21 @@ enum DifficultyLevel {
 }
 
 type Equipment {
-  createdAt: DateTime!
+  createdAt: String
   description: String
   id: ID!
   imageUrl: String
   name: String!
   status: EquipmentStatus!
-  updatedAt: DateTime!
+  updatedAt: String
+}
+
+type EquipmentCategory {
+  categoryId: String!
+  createdAt: String
+  equipmentId: String!
+  id: ID!
+  updatedAt: String
 }
 
 type EquipmentStats {
@@ -152,6 +183,11 @@ enum EquipmentStatus {
   MAINTENANCE
 }
 
+input FilterCategoryInput {
+  description: String
+  name: String
+}
+
 input FilterClassEnrollmentInput {
   classId: ID
   userId: ID
@@ -164,9 +200,19 @@ input FilterCoachInput {
   specialty: String
 }
 
+input FilterEquipmentCategoryInput {
+  categoryId: String
+  equipmentId: String
+}
+
 input FilterEquipmentInput {
   search: String
   status: EquipmentStatus
+}
+
+input FilterGymClassCategoryInput {
+  categoryId: String
+  classId: String
 }
 
 input FilterGymClassInput {
@@ -215,7 +261,7 @@ input FilterUserInput {
 type GymClass {
   coach: Coach!
   coachId: ID!
-  createdAt: DateTime!
+  createdAt: String
   description: String
   difficultyLevel: DifficultyLevel!
   id: ID!
@@ -224,7 +270,15 @@ type GymClass {
   name: String!
   roomId: ID
   scheduleId: ID
-  updatedAt: DateTime!
+  updatedAt: String
+}
+
+type GymClassCategory {
+  categoryId: String!
+  classId: String!
+  createdAt: String
+  id: ID!
+  updatedAt: String
 }
 
 type Membership {
@@ -247,30 +301,39 @@ enum MembershipStatus {
 }
 
 type Mutation {
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
   createClassEnrollment(createClassEnrollmentInput: CreateClassEnrollmentInput!): ClassEnrollment!
   createCoach(createCoachInput: CreateCoachInput!): Coach!
   createEquipment(createEquipmentInput: CreateEquipmentInput!): Equipment!
+  createEquipmentCategory(createEquipmentCategoryInput: CreateEquipmentCategoryInput!): EquipmentCategory!
   createGymClass(createGymClassInput: CreateGymClassInput!): GymClass!
+  createGymClassCategory(createGymClassCategoryInput: CreateGymClassCategoryInput!): GymClassCategory!
   createMembership(createMembershipInput: CreateMembershipInput!): Membership!
   createPayment(createPaymentInput: CreatePaymentInput!): Payment!
   createPlan(createPlanInput: CreatePlanInput!): Plan!
   createRoom(createRoomInput: CreateRoomInput!): Room!
   createSchedule(createScheduleInput: CreateScheduleInput!): Schedule!
   createUser(createUserInput: CreateUserInput!): User!
+  removeCategory(id: ID!): String!
   removeClassEnrollment(id: ID!): Boolean!
   removeCoach(id: ID!): Boolean!
   removeEquipment(id: ID!): Boolean!
+  removeEquipmentCategory(id: ID!): String!
   removeGymClass(id: ID!): Boolean!
+  removeGymClassCategory(id: ID!): String!
   removeMembership(id: ID!): Boolean!
   removePayment(id: ID!): Boolean!
   removePlan(id: ID!): Boolean!
   removeRoom(id: ID!): Boolean!
   removeSchedule(id: ID!): Boolean!
   removeUser(id: ID!): Boolean!
+  updateCategory(id: ID!, updateCategoryInput: UpdateCategoryInput!): Category!
   updateClassEnrollment(id: ID!, updateClassEnrollmentInput: UpdateClassEnrollmentInput!): ClassEnrollment!
   updateCoach(id: ID!, updateCoachInput: UpdateCoachInput!): Coach!
   updateEquipment(id: ID!, updateEquipmentInput: UpdateEquipmentInput!): Equipment!
+  updateEquipmentCategory(id: ID!, updateEquipmentCategoryInput: UpdateEquipmentCategoryInput!): EquipmentCategory!
   updateGymClass(id: ID!, updateGymClassInput: UpdateGymClassInput!): GymClass!
+  updateGymClassCategory(id: ID!, updateGymClassCategoryInput: UpdateGymClassCategoryInput!): GymClassCategory!
   updateMembership(id: ID!, updateMembershipInput: UpdateMembershipInput!): Membership!
   updatePayment(id: ID!, updatePaymentInput: UpdatePaymentInput!): Payment!
   updatePlan(id: ID!, updatePlanInput: UpdatePlanInput!): Plan!
@@ -331,6 +394,8 @@ type Query {
   activeUsers: [User!]!
   availableEquipment: [Equipment!]!
   availableRooms(minCapacity: Float! = 1): [Room!]!
+  categories(filter: FilterCategoryInput): [Category!]!
+  category(id: ID!): Category!
   classEnrollment(id: ID!): ClassEnrollment!
   classEnrollments(filter: FilterClassEnrollmentInput): [ClassEnrollment!]!
   classStats: ClassStats!
@@ -349,10 +414,14 @@ type Query {
   equipment(filter: FilterEquipmentInput): [Equipment!]!
   equipmentById(id: ID!): Equipment!
   equipmentByStatus(status: String!): [Equipment!]!
+  equipmentCategories(filter: FilterEquipmentCategoryInput): [EquipmentCategory!]!
+  equipmentCategory(id: ID!): EquipmentCategory!
   equipmentStats: EquipmentStats!
   experiencedCoaches(minYears: Float!): [Coach!]!
   expiredMemberships: [Membership!]!
   gymClass(id: ID!): GymClass!
+  gymClassCategories(filter: FilterGymClassCategoryInput): [GymClassCategory!]!
+  gymClassCategory(id: ID!): GymClassCategory!
   gymClasses(filter: FilterGymClassInput): [GymClass!]!
   maintenanceEquipment: [Equipment!]!
   membership(id: ID!): Membership!
@@ -395,6 +464,11 @@ type Schedule {
   updatedAt: String
 }
 
+input UpdateCategoryInput {
+  description: String
+  name: String
+}
+
 input UpdateClassEnrollmentInput {
   classId: ID
   enrollmentDate: DateTime
@@ -413,11 +487,21 @@ input UpdateCoachInput {
   specialities: [String!]
 }
 
+input UpdateEquipmentCategoryInput {
+  categoryId: String
+  equipmentId: String
+}
+
 input UpdateEquipmentInput {
   description: String
   imageUrl: String
   name: String
   status: EquipmentStatus
+}
+
+input UpdateGymClassCategoryInput {
+  categoryId: String
+  classId: String
 }
 
 input UpdateGymClassInput {
@@ -479,7 +563,7 @@ input UpdateUserInput {
 }
 
 type User {
-  createdAt: DateTime!
+  createdAt: String
   email: String!
   firstName: String!
   id: ID!
@@ -488,7 +572,7 @@ type User {
   lastName: String!
   password: String!
   role: UserRole!
-  updatedAt: DateTime!
+  updatedAt: String
 }
 
 enum UserRole {

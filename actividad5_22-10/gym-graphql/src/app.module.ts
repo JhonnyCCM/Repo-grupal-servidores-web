@@ -15,6 +15,9 @@ import { PlanModule } from './plan/plan.module';
 import { MembershipModule } from './membership/membership.module';
 import { PaymentModule } from './payment/payment.module';
 import { ClassEnrollmentModule } from './class-enrollment/class-enrollment.module';
+import { CategoryModule } from './category/category.module';
+import { EquipmentCategoryModule } from './equipment-category/equipment-category.module';
+import { GymClassCategoryModule } from './gym-class-category/gym-class-category.module';
 
 @Module({
  imports: [
@@ -42,6 +45,9 @@ import { ClassEnrollmentModule } from './class-enrollment/class-enrollment.modul
  MembershipModule,
  PaymentModule,
  ClassEnrollmentModule,
+ CategoryModule,
+ EquipmentCategoryModule,
+ GymClassCategoryModule,
  ],
 })
 export class AppModule {}
