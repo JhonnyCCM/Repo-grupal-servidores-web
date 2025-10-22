@@ -1,0 +1,250 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ClassStats {
+  activeClasses: Int!
+  advancedClasses: Int!
+  beginnerClasses: Int!
+  classesWithoutCoach: Int!
+  intermediateClasses: Int!
+  totalClasses: Int!
+}
+
+type Coach {
+  biography: String
+  classes: [GymClass!]!
+  createdAt: DateTime!
+  email: String!
+  experienceYears: Int!
+  firstName: String!
+  id: ID!
+  imageUrl: String
+  isActive: Boolean!
+  lastName: String!
+  specialities: [String!]
+  updatedAt: DateTime!
+}
+
+input CreateCoachInput {
+  biography: String
+  email: String!
+  experienceYears: Int! = 0
+  firstName: String!
+  imageUrl: String
+  lastName: String!
+  password: String!
+  specialities: [String!]
+}
+
+input CreateEquipmentInput {
+  description: String
+  imageUrl: String
+  name: String!
+  status: EquipmentStatus! = ACTIVE
+}
+
+input CreateGymClassInput {
+  coachId: ID!
+  description: String
+  difficultyLevel: DifficultyLevel!
+  imageUrl: String
+  name: String!
+  roomId: ID
+  scheduleId: ID
+}
+
+input CreateUserInput {
+  email: String!
+  firstName: String!
+  imageUrl: String
+  lastName: String!
+  password: String!
+  role: UserRole! = USER
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum DifficultyLevel {
+  ADVANCED
+  BEGINNER
+  INTERMEDIATE
+}
+
+type Equipment {
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  imageUrl: String
+  name: String!
+  status: EquipmentStatus!
+  updatedAt: DateTime!
+}
+
+type EquipmentStats {
+  availableEquipment: Int!
+  inactiveEquipment: Int!
+  maintenanceEquipment: Int!
+  totalEquipment: Int!
+}
+
+enum EquipmentStatus {
+  ACTIVE
+  INACTIVE
+  MAINTENANCE
+}
+
+input FilterCoachInput {
+  isActive: Boolean
+  minExperience: Int
+  search: String
+  specialty: String
+}
+
+input FilterEquipmentInput {
+  search: String
+  status: EquipmentStatus
+}
+
+input FilterGymClassInput {
+  coachId: ID
+  difficultyLevel: DifficultyLevel
+  isActive: Boolean
+  search: String
+}
+
+input FilterUserInput {
+  isActive: Boolean
+  role: String
+  search: String
+}
+
+type GymClass {
+  coach: Coach!
+  coachId: ID!
+  createdAt: DateTime!
+  description: String
+  difficultyLevel: DifficultyLevel!
+  id: ID!
+  imageUrl: String
+  isActive: Boolean!
+  name: String!
+  roomId: ID
+  scheduleId: ID
+  updatedAt: DateTime!
+}
+
+type Mutation {
+  createCoach(createCoachInput: CreateCoachInput!): Coach!
+  createEquipment(createEquipmentInput: CreateEquipmentInput!): Equipment!
+  createGymClass(createGymClassInput: CreateGymClassInput!): GymClass!
+  createUser(createUserInput: CreateUserInput!): User!
+  removeCoach(id: ID!): Boolean!
+  removeEquipment(id: ID!): Boolean!
+  removeGymClass(id: ID!): Boolean!
+  removeUser(id: ID!): Boolean!
+  updateCoach(id: ID!, updateCoachInput: UpdateCoachInput!): Coach!
+  updateEquipment(id: ID!, updateEquipmentInput: UpdateEquipmentInput!): Equipment!
+  updateGymClass(id: ID!, updateGymClassInput: UpdateGymClassInput!): GymClass!
+  updateUser(id: ID!, updateUserInput: UpdateUserInput!): User!
+}
+
+type Query {
+  activeClasses: [GymClass!]!
+  activeCoaches: [Coach!]!
+  activeUsers: [User!]!
+  availableEquipment: [Equipment!]!
+  classStats: ClassStats!
+  classesByDifficulty(difficulty: String!): [GymClass!]!
+  classesForCoach(coachId: ID!): [GymClass!]!
+  classesWithCoach: [GymClass!]!
+  coach(id: ID!): Coach!
+  coaches(filter: FilterCoachInput): [Coach!]!
+  coachesBySpecialty(specialty: String!): [Coach!]!
+  coachesWithClasses: [Coach!]!
+  dashboardSummary: String!
+  equipment(filter: FilterEquipmentInput): [Equipment!]!
+  equipmentById(id: ID!): Equipment!
+  equipmentByStatus(status: String!): [Equipment!]!
+  equipmentStats: EquipmentStats!
+  experiencedCoaches(minYears: Float!): [Coach!]!
+  gymClass(id: ID!): GymClass!
+  gymClasses(filter: FilterGymClassInput): [GymClass!]!
+  maintenanceEquipment: [Equipment!]!
+  user(id: ID!): User!
+  userStats: UserStats!
+  users(filter: FilterUserInput): [User!]!
+  usersByRole(role: String!): [User!]!
+  usersWithStats: [User!]!
+}
+
+input UpdateCoachInput {
+  biography: String
+  email: String
+  experienceYears: Int
+  firstName: String
+  imageUrl: String
+  isActive: Boolean
+  lastName: String
+  password: String
+  specialities: [String!]
+}
+
+input UpdateEquipmentInput {
+  description: String
+  imageUrl: String
+  name: String
+  status: EquipmentStatus
+}
+
+input UpdateGymClassInput {
+  coachId: ID
+  description: String
+  difficultyLevel: DifficultyLevel
+  imageUrl: String
+  isActive: Boolean
+  name: String
+  roomId: ID
+  scheduleId: ID
+}
+
+input UpdateUserInput {
+  email: String
+  firstName: String
+  imageUrl: String
+  isActive: Boolean
+  lastName: String
+  password: String
+  role: UserRole
+}
+
+type User {
+  createdAt: DateTime!
+  email: String!
+  firstName: String!
+  id: ID!
+  imageUrl: String
+  isActive: Boolean!
+  lastName: String!
+  password: String!
+  role: UserRole!
+  updatedAt: DateTime!
+}
+
+enum UserRole {
+  ADMIN
+  COACH
+  USER
+}
+
+type UserStats {
+  activeUsers: Int!
+  adminUsers: Int!
+  coachUsers: Int!
+  inactiveUsers: Int!
+  regularUsers: Int!
+  totalUsers: Int!
+}
