@@ -46,10 +46,12 @@ export class RoomController {
   })
   findAll(
     @Query('search') search?: string,
-    @Query('minCapacity', ParseIntPipe) minCapacity?: number,
-    @Query('maxCapacity', ParseIntPipe) maxCapacity?: number
+    @Query('minCapacity') minCapacity?: string,
+    @Query('maxCapacity') maxCapacity?: string
   ): Promise<Room[]> {
-    return this.roomService.findAll(search, minCapacity, maxCapacity);
+    const minCap = minCapacity ? parseInt(minCapacity) : undefined;
+    const maxCap = maxCapacity ? parseInt(maxCapacity) : undefined;
+    return this.roomService.findAll(search, minCap, maxCap);
   }
 
   @Get('available')

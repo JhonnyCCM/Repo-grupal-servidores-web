@@ -2,6 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ClassEnrollment {
+  classId: ID!
+  createdAt: String
+  enrollmentDate: String
+  gymClass: GymClass!
+  id: ID!
+  updatedAt: String
+  user: User!
+  userId: ID!
+}
+
 type ClassStats {
   activeClasses: Int!
   advancedClasses: Int!
@@ -24,6 +35,12 @@ type Coach {
   lastName: String!
   specialities: [String!]
   updatedAt: DateTime!
+}
+
+input CreateClassEnrollmentInput {
+  classId: ID!
+  enrollmentDate: DateTime!
+  userId: ID!
 }
 
 input CreateCoachInput {
@@ -52,6 +69,44 @@ input CreateGymClassInput {
   name: String!
   roomId: ID
   scheduleId: ID
+}
+
+input CreateMembershipInput {
+  endDate: DateTime!
+  planId: ID!
+  startDate: DateTime!
+  status: MembershipStatus! = ACTIVE
+  userId: ID!
+}
+
+input CreatePaymentInput {
+  amount: Float!
+  membershipId: ID!
+  method: PaymentMethod!
+  status: PaymentStatus! = PENDING
+  transactionId: String
+  userId: ID!
+}
+
+input CreatePlanInput {
+  description: String
+  durationInMonths: Int!
+  features: [String!]
+  isActive: Boolean = true
+  name: String!
+  price: Float!
+}
+
+input CreateRoomInput {
+  capacity: Int!
+  description: String
+  name: String!
+}
+
+input CreateScheduleInput {
+  endTime: String!
+  name: String!
+  startTime: String!
 }
 
 input CreateUserInput {
@@ -97,6 +152,11 @@ enum EquipmentStatus {
   MAINTENANCE
 }
 
+input FilterClassEnrollmentInput {
+  classId: ID
+  userId: ID
+}
+
 input FilterCoachInput {
   isActive: Boolean
   minExperience: Int
@@ -113,6 +173,36 @@ input FilterGymClassInput {
   coachId: ID
   difficultyLevel: DifficultyLevel
   isActive: Boolean
+  search: String
+}
+
+input FilterMembershipInput {
+  planId: ID
+  status: MembershipStatus
+  userId: ID
+}
+
+input FilterPaymentInput {
+  membershipId: ID
+  method: PaymentMethod
+  status: PaymentStatus
+  userId: ID
+}
+
+input FilterPlanInput {
+  isActive: Boolean
+  maxPrice: Float
+  minPrice: Float
+  search: String
+}
+
+input FilterRoomInput {
+  maxCapacity: Int
+  minCapacity: Int
+  search: String
+}
+
+input FilterScheduleInput {
   search: String
 }
 
@@ -137,26 +227,112 @@ type GymClass {
   updatedAt: DateTime!
 }
 
+type Membership {
+  createdAt: String
+  endDate: String
+  id: ID!
+  plan: Plan!
+  planId: ID!
+  startDate: String
+  status: MembershipStatus!
+  updatedAt: String
+  user: User!
+  userId: ID!
+}
+
+enum MembershipStatus {
+  ACTIVE
+  EXPIRED
+  INACTIVE
+}
+
 type Mutation {
+  createClassEnrollment(createClassEnrollmentInput: CreateClassEnrollmentInput!): ClassEnrollment!
   createCoach(createCoachInput: CreateCoachInput!): Coach!
   createEquipment(createEquipmentInput: CreateEquipmentInput!): Equipment!
   createGymClass(createGymClassInput: CreateGymClassInput!): GymClass!
+  createMembership(createMembershipInput: CreateMembershipInput!): Membership!
+  createPayment(createPaymentInput: CreatePaymentInput!): Payment!
+  createPlan(createPlanInput: CreatePlanInput!): Plan!
+  createRoom(createRoomInput: CreateRoomInput!): Room!
+  createSchedule(createScheduleInput: CreateScheduleInput!): Schedule!
   createUser(createUserInput: CreateUserInput!): User!
+  removeClassEnrollment(id: ID!): Boolean!
   removeCoach(id: ID!): Boolean!
   removeEquipment(id: ID!): Boolean!
   removeGymClass(id: ID!): Boolean!
+  removeMembership(id: ID!): Boolean!
+  removePayment(id: ID!): Boolean!
+  removePlan(id: ID!): Boolean!
+  removeRoom(id: ID!): Boolean!
+  removeSchedule(id: ID!): Boolean!
   removeUser(id: ID!): Boolean!
+  updateClassEnrollment(id: ID!, updateClassEnrollmentInput: UpdateClassEnrollmentInput!): ClassEnrollment!
   updateCoach(id: ID!, updateCoachInput: UpdateCoachInput!): Coach!
   updateEquipment(id: ID!, updateEquipmentInput: UpdateEquipmentInput!): Equipment!
   updateGymClass(id: ID!, updateGymClassInput: UpdateGymClassInput!): GymClass!
+  updateMembership(id: ID!, updateMembershipInput: UpdateMembershipInput!): Membership!
+  updatePayment(id: ID!, updatePaymentInput: UpdatePaymentInput!): Payment!
+  updatePlan(id: ID!, updatePlanInput: UpdatePlanInput!): Plan!
+  updateRoom(id: ID!, updateRoomInput: UpdateRoomInput!): Room!
+  updateSchedule(id: ID!, updateScheduleInput: UpdateScheduleInput!): Schedule!
   updateUser(id: ID!, updateUserInput: UpdateUserInput!): User!
+}
+
+type Payment {
+  amount: Float!
+  createdAt: String
+  id: ID!
+  membership: Membership!
+  membershipId: ID!
+  method: PaymentMethod!
+  paidAt: String
+  status: PaymentStatus!
+  transactionId: String
+  updatedAt: String
+  user: User!
+  userId: ID!
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CASH
+  CREDIT_CARD
+  DEBIT_CARD
+  MERCADOPAGO
+  PAYPAL
+  STRIPE
+}
+
+enum PaymentStatus {
+  COMPLETED
+  FAILED
+  PENDING
+  REFUNDED
+}
+
+type Plan {
+  createdAt: String
+  description: String
+  durationInMonths: Int!
+  features: [String!]
+  id: ID!
+  isActive: Boolean!
+  name: String!
+  price: Float!
+  updatedAt: String
 }
 
 type Query {
   activeClasses: [GymClass!]!
   activeCoaches: [Coach!]!
+  activeMemberships: [Membership!]!
+  activePlans: [Plan!]!
   activeUsers: [User!]!
   availableEquipment: [Equipment!]!
+  availableRooms(minCapacity: Float! = 1): [Room!]!
+  classEnrollment(id: ID!): ClassEnrollment!
+  classEnrollments(filter: FilterClassEnrollmentInput): [ClassEnrollment!]!
   classStats: ClassStats!
   classesByDifficulty(difficulty: String!): [GymClass!]!
   classesForCoach(coachId: ID!): [GymClass!]!
@@ -165,20 +341,64 @@ type Query {
   coaches(filter: FilterCoachInput): [Coach!]!
   coachesBySpecialty(specialty: String!): [Coach!]!
   coachesWithClasses: [Coach!]!
+  completedPayments: [Payment!]!
   dashboardSummary: String!
+  enrollmentStats: String!
+  enrollmentsByClass(classId: ID!): [ClassEnrollment!]!
+  enrollmentsByUser(userId: ID!): [ClassEnrollment!]!
   equipment(filter: FilterEquipmentInput): [Equipment!]!
   equipmentById(id: ID!): Equipment!
   equipmentByStatus(status: String!): [Equipment!]!
   equipmentStats: EquipmentStats!
   experiencedCoaches(minYears: Float!): [Coach!]!
+  expiredMemberships: [Membership!]!
   gymClass(id: ID!): GymClass!
   gymClasses(filter: FilterGymClassInput): [GymClass!]!
   maintenanceEquipment: [Equipment!]!
+  membership(id: ID!): Membership!
+  memberships(filter: FilterMembershipInput): [Membership!]!
+  membershipsByUser(userId: ID!): [Membership!]!
+  payment(id: ID!): Payment!
+  paymentStats: String!
+  payments(filter: FilterPaymentInput): [Payment!]!
+  paymentsByUser(userId: ID!): [Payment!]!
+  pendingPayments: [Payment!]!
+  plan(id: ID!): Plan!
+  plans(filter: FilterPlanInput): [Plan!]!
+  plansByPriceRange(maxPrice: Float!, minPrice: Float!): [Plan!]!
+  room(id: ID!): Room!
+  rooms(filter: FilterRoomInput): [Room!]!
+  schedule(id: ID!): Schedule!
+  schedules(filter: FilterScheduleInput): [Schedule!]!
   user(id: ID!): User!
   userStats: UserStats!
   users(filter: FilterUserInput): [User!]!
   usersByRole(role: String!): [User!]!
   usersWithStats: [User!]!
+}
+
+type Room {
+  capacity: Int!
+  createdAt: String
+  description: String
+  id: ID!
+  name: String!
+  updatedAt: String
+}
+
+type Schedule {
+  createdAt: String
+  endTime: String!
+  id: ID!
+  name: String!
+  startTime: String!
+  updatedAt: String
+}
+
+input UpdateClassEnrollmentInput {
+  classId: ID
+  enrollmentDate: DateTime
+  userId: ID
 }
 
 input UpdateCoachInput {
@@ -209,6 +429,43 @@ input UpdateGymClassInput {
   name: String
   roomId: ID
   scheduleId: ID
+}
+
+input UpdateMembershipInput {
+  endDate: DateTime
+  planId: ID
+  startDate: DateTime
+  status: MembershipStatus
+  userId: ID
+}
+
+input UpdatePaymentInput {
+  amount: Float
+  method: PaymentMethod
+  paidAt: DateTime
+  status: PaymentStatus
+  transactionId: String
+}
+
+input UpdatePlanInput {
+  description: String
+  durationInMonths: Int
+  features: [String!]
+  isActive: Boolean
+  name: String
+  price: Float
+}
+
+input UpdateRoomInput {
+  capacity: Int
+  description: String
+  name: String
+}
+
+input UpdateScheduleInput {
+  endTime: String
+  name: String
+  startTime: String
 }
 
 input UpdateUserInput {

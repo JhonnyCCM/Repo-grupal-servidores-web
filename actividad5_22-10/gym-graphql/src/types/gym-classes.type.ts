@@ -40,4 +40,10 @@ export class GymClass {
 
     @Field(() => ID, { nullable: true })
     roomId?: string;
+
+    // Relations (will be resolved by resolvers)
+    // coach?: Coach;
+    // schedule?: Schedule;
+    // room?: Room;
+    // enrollments?: ClassEnrollment[];
 }

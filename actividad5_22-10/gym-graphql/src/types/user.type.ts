@@ -37,4 +37,9 @@ export class User {
 
     @Field(() => UserRole)
     role: UserRole;
+
+    // Relations (will be resolved by resolvers)
+    // memberships?: Membership[];
+    // payments?: Payment[];
+    // enrollments?: ClassEnrollment[];
 }

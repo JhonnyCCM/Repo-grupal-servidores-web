@@ -9,6 +9,12 @@ import { CoachModule } from './coach/coach.module';
 import { GymClassModule } from './gym-classes/gym-class.module';
 import { EquipmentModule } from './equipment/equipment.module';
 import { StatsModule } from './stats/stats.module';
+import { RoomModule } from './room/room.module';
+import { ScheduleModule } from './schedule/schedule.module';
+import { PlanModule } from './plan/plan.module';
+import { MembershipModule } from './membership/membership.module';
+import { PaymentModule } from './payment/payment.module';
+import { ClassEnrollmentModule } from './class-enrollment/class-enrollment.module';
 
 @Module({
  imports: [
@@ -30,6 +36,12 @@ import { StatsModule } from './stats/stats.module';
  GymClassModule,
  EquipmentModule,
  StatsModule,
+ RoomModule,
+ ScheduleModule,
+ PlanModule,
+ MembershipModule,
+ PaymentModule,
+ ClassEnrollmentModule,
  ],
 })
 export class AppModule {}
