@@ -72,27 +72,17 @@ export class PlanHttpService {
 
   // Consulta compleja: planes activos
   findActivePlans(): Observable<Plan[]> {
-    return this.httpService.get(`${this.restUrl}/active`).pipe(
-      map(response => response.data),
-      catchError(error => {
-        throw new HttpException(
-          error.response?.data?.message || 'Error fetching active plans',
-          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }),
+    return this.findAll().pipe(
+      map(plans => plans.filter(plan => plan.isActive))
     );
   }
 
   // Consulta compleja: planes por rango de precio
   findByPriceRange(minPrice: number, maxPrice: number): Observable<Plan[]> {
-    return this.httpService.get(`${this.restUrl}/price-range?min=${minPrice}&max=${maxPrice}`).pipe(
-      map(response => response.data),
-      catchError(error => {
-        throw new HttpException(
-          error.response?.data?.message || 'Error fetching plans by price range',
-          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }),
+    return this.findAll().pipe(
+      map(plans => plans.filter(plan => 
+        plan.price >= minPrice && plan.price <= maxPrice
+      ))
     );
   }
 }

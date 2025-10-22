@@ -72,27 +72,15 @@ export class ClassEnrollmentHttpService {
 
   // Consulta compleja: inscripciones por usuario
   findByUserId(userId: string): Observable<ClassEnrollment[]> {
-    return this.httpService.get(`${this.restUrl}/user/${userId}`).pipe(
-      map(response => response.data),
-      catchError(error => {
-        throw new HttpException(
-          error.response?.data?.message || 'Error fetching enrollments by user',
-          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }),
+    return this.findAll().pipe(
+      map(enrollments => enrollments.filter(enrollment => enrollment.userId === userId))
     );
   }
 
   // Consulta compleja: inscripciones por clase
   findByClassId(classId: string): Observable<ClassEnrollment[]> {
-    return this.httpService.get(`${this.restUrl}/class/${classId}`).pipe(
-      map(response => response.data),
-      catchError(error => {
-        throw new HttpException(
-          error.response?.data?.message || 'Error fetching enrollments by class',
-          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }),
+    return this.findAll().pipe(
+      map(enrollments => enrollments.filter(enrollment => enrollment.classId === classId))
     );
   }
 

@@ -72,14 +72,8 @@ export class RoomHttpService {
 
   // Consulta compleja: salas disponibles con capacidad mínima
   findAvailableRooms(minCapacity: number): Observable<Room[]> {
-    return this.httpService.get(`${this.restUrl}/available?minCapacity=${minCapacity}`).pipe(
-      map(response => response.data),
-      catchError(error => {
-        throw new HttpException(
-          error.response?.data?.message || 'Error fetching available rooms',
-          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }),
+    return this.findAll().pipe(
+      map(rooms => rooms.filter(room => room.capacity >= minCapacity))
     );
   }
 }

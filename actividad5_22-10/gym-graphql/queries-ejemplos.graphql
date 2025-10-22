@@ -55,7 +55,7 @@ query InscripcionesCompletas {
       id
       name
       description
-      difficulty
+      difficultyLevel
     }
   }
 }
@@ -208,7 +208,7 @@ query InscripcionesPorUsuario {
     gymClass {
       name
       description
-      difficulty
+      difficultyLevel
     }
   }
 }
@@ -249,6 +249,7 @@ query MembresiasExpiradas {
 # ============================================
 
 # --- USUARIOS ---
+# PASO 1: Ejecuta esta query primero para obtener UUIDs reales
 query TodosLosUsuarios {
   users {
     id
@@ -260,6 +261,7 @@ query TodosLosUsuarios {
   }
 }
 
+# PASO 2: Copia un ID de la query anterior y reemplaza "UUID-AQUI"
 query UsuarioPorId {
   user(id: "UUID-AQUI") {
     id
@@ -275,9 +277,11 @@ query UsuarioPorId {
 query TodosLosEntrenadores {
   coaches {
     id
-    name
+    firstName
+    lastName
     email
-    specialty
+    specialities
+    experienceYears
     isActive
   }
 }
@@ -288,7 +292,7 @@ query TodasLasClases {
     id
     name
     description
-    difficulty
+    difficultyLevel
     isActive
   }
 }
@@ -297,7 +301,7 @@ query ClasesActivas {
   activeClasses {
     id
     name
-    difficulty
+    difficultyLevel
   }
 }
 
@@ -383,6 +387,162 @@ query TodasLasMembresias {
 # ============================================
 # MUTACIONES - CREAR ENTIDADES
 # ============================================
+
+# --- CREAR USUARIO ---
+mutation CrearUsuario {
+  createUser(createUserInput: {
+    firstName: "Juan"
+    lastName: "Pérez"
+    email: "juan.perez@example.com"
+    password: "password123"
+    role: USER
+    isActive: true
+  }) {
+    id
+    firstName
+    lastName
+    email
+    role
+    isActive
+  }
+}
+
+mutation CrearAdmin {
+  createUser(createUserInput: {
+    firstName: "Admin"
+    lastName: "Principal"
+    email: "admin@gym.com"
+    password: "admin123"
+    role: ADMIN
+    isActive: true
+  }) {
+    id
+    firstName
+    lastName
+    email
+    role
+  }
+}
+
+# --- CREAR ENTRENADOR ---
+mutation CrearEntrenador {
+  createCoach(createCoachInput: {
+    firstName: "Carlos"
+    lastName: "Martínez"
+    email: "carlos.martinez@gym.com"
+    password: "coach123"
+    specialities: ["Fitness", "Musculación", "Cardio"]
+    experienceYears: 5
+    isActive: true
+  }) {
+    id
+    firstName
+    lastName
+    email
+    specialities
+    experienceYears
+    isActive
+  }
+}
+
+mutation CrearEntrenadorYoga {
+  createCoach(createCoachInput: {
+    firstName: "María"
+    lastName: "González"
+    email: "maria.gonzalez@gym.com"
+    password: "coach123"
+    specialities: ["Yoga", "Pilates", "Meditación"]
+    experienceYears: 8
+    isActive: true
+  }) {
+    id
+    firstName
+    lastName
+    specialities
+    experienceYears
+  }
+}
+
+# --- CREAR CLASE ---
+mutation CrearClase {
+  createGymClass(createGymClassInput: {
+    name: "Spinning Avanzado"
+    description: "Clase intensiva de spinning para niveles avanzados"
+    difficultyLevel: ADVANCED
+    isActive: true
+  }) {
+    id
+    name
+    description
+    difficultyLevel
+    isActive
+  }
+}
+
+mutation CrearClaseYoga {
+  createGymClass(createGymClassInput: {
+    name: "Yoga para Principiantes"
+    description: "Introducción al yoga con posturas básicas"
+    difficultyLevel: BEGINNER
+    isActive: true
+  }) {
+    id
+    name
+    description
+    difficultyLevel
+  }
+}
+
+mutation CrearClaseFuncional {
+  createGymClass(createGymClassInput: {
+    name: "Entrenamiento Funcional"
+    description: "Circuito de ejercicios funcionales nivel intermedio"
+    difficultyLevel: INTERMEDIATE
+    isActive: true
+  }) {
+    id
+    name
+    difficultyLevel
+  }
+}
+
+# --- CREAR EQUIPAMIENTO ---
+mutation CrearEquipamiento {
+  createEquipment(createEquipmentInput: {
+    name: "Cinta de Correr Pro"
+    description: "Cinta de correr profesional con monitor cardíaco"
+    status: AVAILABLE
+  }) {
+    id
+    name
+    description
+    status
+  }
+}
+
+mutation CrearMancuernas {
+  createEquipment(createEquipmentInput: {
+    name: "Set de Mancuernas 20kg"
+    description: "Par de mancuernas ajustables hasta 20kg"
+    status: AVAILABLE
+  }) {
+    id
+    name
+    status
+  }
+}
+
+mutation CrearBicicleta {
+  createEquipment(createEquipmentInput: {
+    name: "Bicicleta Estática"
+    description: "Bicicleta estática para spinning"
+    status: MAINTENANCE
+  }) {
+    id
+    name
+    status
+  }
+}
 
 # --- CREAR PLAN ---
 mutation CrearPlanBasico {
@@ -525,6 +685,7 @@ mutation CrearMembresia {
 
 # --- CREAR PAGO ---
 # IMPORTANTE: Reemplaza los UUIDs con IDs reales
+# NOTA: paidAt NO está disponible en CreatePaymentInput, solo en UpdatePaymentInput
 mutation CrearPago {
   createPayment(createPaymentInput: {
     userId: "UUID-DEL-USUARIO"
@@ -533,13 +694,13 @@ mutation CrearPago {
     method: CREDIT_CARD
     status: COMPLETED
     transactionId: "TXN-2025-001"
-    paidAt: "2025-01-15T10:30:00Z"
   }) {
     id
     amount
     method
     status
     transactionId
+    paidAt
     user {
       firstName
       lastName
@@ -570,6 +731,90 @@ mutation CrearInscripcion {
 # ============================================
 # MUTACIONES - ACTUALIZAR ENTIDADES
 # ============================================
+
+# --- ACTUALIZAR USUARIO ---
+mutation ActualizarUsuario {
+  updateUser(
+    id: "UUID-DEL-USUARIO"
+    updateUserInput: {
+      firstName: "Juan Carlos"
+      isActive: true
+    }
+  ) {
+    id
+    firstName
+    lastName
+    isActive
+  }
+}
+
+# --- ACTUALIZAR ENTRENADOR ---
+mutation ActualizarEntrenador {
+  updateCoach(
+    id: "UUID-DEL-ENTRENADOR"
+    updateCoachInput: {
+      specialities: ["Fitness", "Musculación", "Cardio", "CrossFit"]
+      experienceYears: 6
+    }
+  ) {
+    id
+    firstName
+    lastName
+    specialities
+    experienceYears
+  }
+}
+
+# --- ACTUALIZAR CLASE ---
+mutation ActualizarClase {
+  updateGymClass(
+    id: "UUID-DE-LA-CLASE"
+    updateGymClassInput: {
+      description: "Clase renovada con nuevo contenido"
+      difficultyLevel: ADVANCED
+      isActive: true
+    }
+  ) {
+    id
+    name
+    description
+    difficultyLevel
+    isActive
+  }
+}
+
+# --- ACTUALIZAR EQUIPAMIENTO ---
+mutation ActualizarEquipamiento {
+  updateEquipment(
+    id: "UUID-DEL-EQUIPAMIENTO"
+    updateEquipmentInput: {
+      status: MAINTENANCE
+      description: "En mantenimiento preventivo"
+    }
+  ) {
+    id
+    name
+    description
+    status
+  }
+}
+
+# --- ACTUALIZAR PAGO (Incluye paidAt) ---
+mutation ActualizarPago {
+  updatePayment(
+    id: "UUID-DEL-PAGO"
+    updatePaymentInput: {
+      status: COMPLETED
+      paidAt: "2025-01-15T10:30:00Z"
+    }
+  ) {
+    id
+    amount
+    status
+    paidAt
+    transactionId
+  }
+}
 
 # --- ACTUALIZAR PLAN ---
 mutation ActualizarPlan {
@@ -619,6 +864,22 @@ mutation ActualizarMembresia {
 # ============================================
 # MUTACIONES - ELIMINAR ENTIDADES
 # ============================================
+
+mutation EliminarUsuario {
+  removeUser(id: "UUID-DEL-USUARIO")
+}
+
+mutation EliminarEntrenador {
+  removeCoach(id: "UUID-DEL-ENTRENADOR")
+}
+
+mutation EliminarClase {
+  removeGymClass(id: "UUID-DE-LA-CLASE")
+}
+
+mutation EliminarEquipamiento {
+  removeEquipment(id: "UUID-DEL-EQUIPAMIENTO")
+}
 
 mutation EliminarPlan {
   removePlan(id: "UUID-DEL-PLAN")

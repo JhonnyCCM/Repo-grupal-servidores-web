@@ -7,7 +7,7 @@ import { CreatePaymentInput, UpdatePaymentInput, FilterPaymentInput } from '../i
 import { PaymentHttpService } from './payment-http.service';
 import { UserHttpService } from '../user/user-http.service';
 import { MembershipHttpService } from '../membership/membership-http.service';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @Resolver(() => Payment)
 export class PaymentResolver {
@@ -64,8 +64,20 @@ export class PaymentResolver {
   }
 
   @Query(() => String, { name: 'paymentStats' })
-  getPaymentStats(): Observable<any> {
-    return this.paymentHttpService.getPaymentStats();
+  getPaymentStats(): Observable<string> {
+    return this.paymentHttpService.findAll().pipe(
+      map((payments: any[]) => {
+        const total = payments.length;
+        const completed = payments.filter(p => p.status === 'COMPLETED').length;
+        const pending = payments.filter(p => p.status === 'PENDING').length;
+        const failed = payments.filter(p => p.status === 'FAILED').length;
+        const totalAmount = payments
+          .filter(p => p.status === 'COMPLETED')
+          .reduce((sum, p) => sum + Number(p.amount || 0), 0);
+        
+        return `Payment Statistics: Total: ${total}, Completed: ${completed}, Pending: ${pending}, Failed: ${failed}, Total Amount: $${totalAmount.toFixed(2)}`;
+      })
+    );
   }
 
   // Relations

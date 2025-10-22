@@ -7,7 +7,7 @@ import { CreateClassEnrollmentInput, UpdateClassEnrollmentInput, FilterClassEnro
 import { ClassEnrollmentHttpService } from './class-enrollment-http.service';
 import { UserHttpService } from '../user/user-http.service';
 import { GymClassHttpService } from '../gym-classes/gym-class-http.service';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @Resolver(() => ClassEnrollment)
 export class ClassEnrollmentResolver {
@@ -59,8 +59,16 @@ export class ClassEnrollmentResolver {
   }
 
   @Query(() => String, { name: 'enrollmentStats' })
-  getEnrollmentStats(): Observable<any> {
-    return this.classEnrollmentHttpService.getEnrollmentStats();
+  getEnrollmentStats(): Observable<string> {
+    return this.classEnrollmentHttpService.findAll().pipe(
+      map((enrollments: any[]) => {
+        const total = enrollments.length;
+        const uniqueUsers = new Set(enrollments.map(e => e.userId)).size;
+        const uniqueClasses = new Set(enrollments.map(e => e.classId)).size;
+        
+        return `Enrollment Statistics: Total Enrollments: ${total}, Unique Users: ${uniqueUsers}, Unique Classes: ${uniqueClasses}`;
+      })
+    );
   }
 
   // Relations

@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { Observable, map, catchError } from 'rxjs';
 import { Payment } from '../types/payment.type';
 import { CreatePaymentInput, UpdatePaymentInput, FilterPaymentInput } from '../inputs/payment.input';
+import { PaymentStatus } from '../common/enums';
 
 @Injectable()
 export class PaymentHttpService {
@@ -38,8 +39,10 @@ export class PaymentHttpService {
     return this.httpService.post<Payment>(this.restUrl, createPaymentInput).pipe(
       map(response => response.data),
       catchError(error => {
+        const errorMessage = error.response?.data?.message || error.message || 'Error creating payment';
+        const errorDetails = error.response?.data?.error ? ` - ${error.response.data.error}` : '';
         throw new HttpException(
-          error.response?.data?.message || 'Error creating payment',
+          `${errorMessage}${errorDetails}`,
           error.response?.status || HttpStatus.BAD_REQUEST,
         );
       }),
@@ -72,40 +75,22 @@ export class PaymentHttpService {
 
   // Consulta compleja: pagos completados
   findCompletedPayments(): Observable<Payment[]> {
-    return this.httpService.get(`${this.restUrl}/completed`).pipe(
-      map(response => response.data),
-      catchError(error => {
-        throw new HttpException(
-          error.response?.data?.message || 'Error fetching completed payments',
-          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }),
+    return this.findAll().pipe(
+      map(payments => payments.filter((payment: any) => payment.status === PaymentStatus.COMPLETED || payment.status === 'COMPLETED'))
     );
   }
 
   // Consulta compleja: pagos pendientes
   findPendingPayments(): Observable<Payment[]> {
-    return this.httpService.get(`${this.restUrl}/pending`).pipe(
-      map(response => response.data),
-      catchError(error => {
-        throw new HttpException(
-          error.response?.data?.message || 'Error fetching pending payments',
-          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }),
+    return this.findAll().pipe(
+      map(payments => payments.filter((payment: any) => payment.status === PaymentStatus.PENDING || payment.status === 'PENDING'))
     );
   }
 
   // Consulta compleja: pagos por usuario
   findByUserId(userId: string): Observable<Payment[]> {
-    return this.httpService.get(`${this.restUrl}/user/${userId}`).pipe(
-      map(response => response.data),
-      catchError(error => {
-        throw new HttpException(
-          error.response?.data?.message || 'Error fetching payments by user',
-          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }),
+    return this.findAll().pipe(
+      map(payments => payments.filter(payment => payment.userId === userId))
     );
   }
 

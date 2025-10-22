@@ -72,40 +72,34 @@ export class MembershipHttpService {
 
   // Consulta compleja: membresías activas
   findActiveMemberships(): Observable<Membership[]> {
-    return this.httpService.get(`${this.restUrl}/active`).pipe(
-      map(response => response.data),
-      catchError(error => {
-        throw new HttpException(
-          error.response?.data?.message || 'Error fetching active memberships',
-          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }),
+    return this.findAll().pipe(
+      map(memberships => memberships.filter((m: any) => m.status === 'ACTIVE' || m.status === 'Activa'))
     );
   }
 
   // Consulta compleja: membresías por usuario
   findByUserId(userId: string): Observable<Membership[]> {
-    return this.httpService.get(`${this.restUrl}/user/${userId}`).pipe(
-      map(response => response.data),
-      catchError(error => {
-        throw new HttpException(
-          error.response?.data?.message || 'Error fetching memberships by user',
-          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }),
+    return this.findAll().pipe(
+      map(memberships => memberships.filter(m => m.userId === userId))
     );
   }
 
   // Consulta compleja: membresías expiradas
   findExpiredMemberships(): Observable<Membership[]> {
-    return this.httpService.get(`${this.restUrl}/expired`).pipe(
-      map(response => response.data),
-      catchError(error => {
-        throw new HttpException(
-          error.response?.data?.message || 'Error fetching expired memberships',
-          error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }),
+    return this.findAll().pipe(
+      map(memberships => memberships.filter((m: any) => {
+        // Check by status
+        if (m.status === 'EXPIRED' || m.status === 'Expirada') {
+          return true;
+        }
+        // Check by end date
+        if (m.endDate) {
+          const endDate = new Date(m.endDate);
+          const now = new Date();
+          return endDate < now;
+        }
+        return false;
+      }))
     );
   }
 }
