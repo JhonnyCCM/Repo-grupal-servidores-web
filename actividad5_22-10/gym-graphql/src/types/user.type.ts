@@ -29,11 +29,11 @@ export class User {
     @Field()
     isActive: boolean;
 
-    @Field()
-    createdAt: Date;
+    @Field({ nullable: true })
+    createdAt?: string;
 
-    @Field()
-    updatedAt: Date;
+    @Field({ nullable: true })
+    updatedAt?: string;
 
     @Field(() => UserRole)
     role: UserRole;

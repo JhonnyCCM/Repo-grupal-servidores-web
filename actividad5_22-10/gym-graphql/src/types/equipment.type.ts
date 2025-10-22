@@ -20,11 +20,11 @@ export class Equipment {
     @Field(() => Status)
     status: Status;
 
-    @Field()
-    createdAt: Date;
+    @Field({ nullable: true })
+    createdAt?: string;
 
-    @Field()
-    updatedAt: Date;
+    @Field({ nullable: true })
+    updatedAt?: string;
 
     @Field({ nullable: true })
     imageUrl?: string;

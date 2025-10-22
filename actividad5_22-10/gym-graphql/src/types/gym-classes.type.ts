@@ -11,11 +11,11 @@ export class GymClass {
     @Field(() => ID)
     id: string;
 
-    @Field()
-    createdAt: Date;
+    @Field({ nullable: true })
+    createdAt?: string;
 
-    @Field()
-    updatedAt: Date;
+    @Field({ nullable: true })
+    updatedAt?: string;
 
     @Field()
     name: string;
