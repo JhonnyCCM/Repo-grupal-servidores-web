@@ -10,6 +10,45 @@ type Category {
   updatedAt: String
 }
 
+type CategoryByDateStats {
+  count: Int!
+  date: String!
+}
+
+input CategorySort {
+  field: CategorySortField!
+  order: SortOrder! = ASC
+}
+
+"""Campos disponibles para ordenar categorías"""
+enum CategorySortField {
+  CREATED_AT
+  DESCRIPTION
+  ID
+  NAME
+  UPDATED_AT
+}
+
+type CategoryStats {
+  averageDescriptionLength: Float!
+  categoriesByDate: [CategoryByDateStats!]!
+  categoriesWithDescription: Int!
+  categoriesWithoutDescription: Int!
+  mostUsedCategories: [MostUsedCategory!]!
+  totalCategories: Int!
+}
+
+type CategoryUsageStats {
+  categoryId: String!
+  classCount: Int!
+  usagePercentage: Float!
+}
+
+type ClassCategoryDistribution {
+  categoryCount: Int!
+  classId: String!
+}
+
 type ClassEnrollment {
   classId: ID!
   createdAt: String
@@ -28,6 +67,12 @@ type ClassStats {
   classesWithoutCoach: Int!
   intermediateClasses: Int!
   totalClasses: Int!
+}
+
+type ClassUsageStats {
+  categoryCount: Int!
+  classId: String!
+  diversityIndex: Float!
 }
 
 type Coach {
@@ -141,6 +186,22 @@ input CreateUserInput {
   role: UserRole! = USER
 }
 
+input DateFilter {
+  endValue: String
+  operator: DateFilterOperator!
+  value: String!
+}
+
+"""Operadores para filtros de fecha"""
+enum DateFilterOperator {
+  BETWEEN
+  EQUALS
+  GREATER_THAN
+  GREATER_THAN_OR_EQUAL
+  LESS_THAN
+  LESS_THAN_OR_EQUAL
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -184,8 +245,22 @@ enum EquipmentStatus {
 }
 
 input FilterCategoryInput {
+  AND: [FilterCategoryInput!]
+  NOT: FilterCategoryInput
+  OR: [FilterCategoryInput!]
+  createdAtFilter: DateFilter
   description: String
+  descriptionFilter: StringFilter
+  excludeIds: [String!]
+  hasDescription: Boolean
+  id: String
+  includeIds: [String!]
   name: String
+  nameFilter: StringFilter
+  pagination: PaginationInput
+  searchText: String
+  sort: [CategorySort!]
+  updatedAtFilter: DateFilter
 }
 
 input FilterClassEnrollmentInput {
@@ -211,8 +286,32 @@ input FilterEquipmentInput {
 }
 
 input FilterGymClassCategoryInput {
+  AND: [FilterGymClassCategoryInput!]
+  NOT: FilterGymClassCategoryInput
+  OR: [FilterGymClassCategoryInput!]
   categoryId: String
+  categoryIdFilter: StringFilter
+  categoryIds: [String!]
+  categoryPattern: String
   classId: String
+  classIdFilter: StringFilter
+  classIds: [String!]
+  classPattern: String
+  createdAfter: String
+  createdAtFilter: DateFilter
+  createdBefore: String
+  excludeCategoryIds: [String!]
+  excludeClassIds: [String!]
+  excludeIds: [String!]
+  hasValidCategory: Boolean
+  hasValidClass: Boolean
+  id: String
+  includeIds: [String!]
+  pagination: PaginationInput
+  sort: [GymClassCategorySort!]
+  updatedAfter: String
+  updatedAtFilter: DateFilter
+  updatedBefore: String
 }
 
 input FilterGymClassInput {
@@ -281,6 +380,31 @@ type GymClassCategory {
   updatedAt: String
 }
 
+input GymClassCategorySort {
+  field: GymClassCategorySortField!
+  order: SortOrder! = ASC
+}
+
+"""Campos disponibles para ordenar gym-class-categories"""
+enum GymClassCategorySortField {
+  CATEGORY_ID
+  CLASS_ID
+  CREATED_AT
+  ID
+  UPDATED_AT
+}
+
+type GymClassCategoryStats {
+  averageCategoriesPerClass: Float!
+  averageClassesPerCategory: Float!
+  categoryUsageStats: [CategoryUsageStats!]!
+  classCategoryDistribution: [ClassCategoryDistribution!]!
+  classUsageStats: [ClassUsageStats!]!
+  totalAssociations: Int!
+  uniqueCategories: Int!
+  uniqueClasses: Int!
+}
+
 type Membership {
   createdAt: String
   endDate: String
@@ -298,6 +422,12 @@ enum MembershipStatus {
   ACTIVE
   EXPIRED
   INACTIVE
+}
+
+type MostUsedCategory {
+  categoryId: String!
+  categoryName: String!
+  usageCount: Int!
 }
 
 type Mutation {
@@ -340,6 +470,11 @@ type Mutation {
   updateRoom(id: ID!, updateRoomInput: UpdateRoomInput!): Room!
   updateSchedule(id: ID!, updateScheduleInput: UpdateScheduleInput!): Schedule!
   updateUser(id: ID!, updateUserInput: UpdateUserInput!): User!
+}
+
+input PaginationInput {
+  skip: Float = 0
+  take: Float = 10
 }
 
 type Payment {
@@ -395,7 +530,22 @@ type Query {
   availableEquipment: [Equipment!]!
   availableRooms(minCapacity: Float! = 1): [Room!]!
   categories(filter: FilterCategoryInput): [Category!]!
+
+  """Obtener categorías creadas en un rango de fechas"""
+  categoriesByDateRange(endDate: String!, startDate: String!): [Category!]!
+
+  """Buscar categorías por patrón de nombre"""
+  categoriesByNamePattern(caseSensitive: Boolean = false, pattern: String!): [Category!]!
+
+  """Contar categorías que coinciden con el filtro"""
+  categoriesCount(filter: FilterCategoryInput): Int!
+
+  """Obtener categorías que tienen o no descripción"""
+  categoriesWithDescription(hasDescription: Boolean!): [Category!]!
   category(id: ID!): Category!
+
+  """Obtener estadísticas detalladas de categorías"""
+  categoryStatistics(filter: StatsFilterInput): CategoryStats!
   classEnrollment(id: ID!): ClassEnrollment!
   classEnrollments(filter: FilterClassEnrollmentInput): [ClassEnrollment!]!
   classStats: ClassStats!
@@ -421,12 +571,42 @@ type Query {
   expiredMemberships: [Membership!]!
   gymClass(id: ID!): GymClass!
   gymClassCategories(filter: FilterGymClassCategoryInput): [GymClassCategory!]!
+
+  """Obtener todas las clases de una categoría específica"""
+  gymClassCategoriesByCategory(categoryId: String!, limit: Int): [GymClassCategory!]!
+
+  """Obtener todas las categorías de una clase específica"""
+  gymClassCategoriesByClass(classId: String!, limit: Int): [GymClassCategory!]!
+
+  """Obtener asociaciones creadas en un rango de fechas"""
+  gymClassCategoriesByDateRange(endDate: String!, startDate: String!): [GymClassCategory!]!
+
+  """Obtener clases de múltiples categorías"""
+  gymClassCategoriesByMultipleCategories(categoryIds: [String!]!): [GymClassCategory!]!
+
+  """Obtener categorías de múltiples clases"""
+  gymClassCategoriesByMultipleClasses(classIds: [String!]!): [GymClassCategory!]!
+
+  """Contar asociaciones que coinciden con el filtro"""
+  gymClassCategoriesCount(filter: FilterGymClassCategoryInput): Int!
+
+  """Obtener asociaciones excluyendo ciertos IDs"""
+  gymClassCategoriesExcluding(excludeCategoryIds: [String!], excludeClassIds: [String!], excludeIds: [String!]!): [GymClassCategory!]!
   gymClassCategory(id: ID!): GymClassCategory!
+
+  """Obtener estadísticas detalladas de asociaciones clase-categoría"""
+  gymClassCategoryStatistics(filter: StatsFilterInput): GymClassCategoryStats!
   gymClasses(filter: FilterGymClassInput): [GymClass!]!
   maintenanceEquipment: [Equipment!]!
   membership(id: ID!): Membership!
   memberships(filter: FilterMembershipInput): [Membership!]!
   membershipsByUser(userId: ID!): [Membership!]!
+
+  """Obtener las asociaciones más activas"""
+  mostActiveClassCategories(limit: Int = 10): [GymClassCategory!]!
+
+  """Obtener asociaciones sin relaciones válidas"""
+  orphanedAssociations: [GymClassCategory!]!
   payment(id: ID!): Payment!
   paymentStats: String!
   payments(filter: FilterPaymentInput): [Payment!]!
@@ -435,10 +615,28 @@ type Query {
   plan(id: ID!): Plan!
   plans(filter: FilterPlanInput): [Plan!]!
   plansByPriceRange(maxPrice: Float!, minPrice: Float!): [Plan!]!
+
+  """Obtener las categorías más populares ordenadas por uso"""
+  popularCategories(limit: Int = 10): [Category!]!
+
+  """Obtener las asociaciones más recientes"""
+  recentAssociations(hours: Int = 24, limit: Int = 10): [GymClassCategory!]!
+
+  """Obtener las categorías creadas más recientemente"""
+  recentCategories(days: Int = 30, limit: Int = 10): [Category!]!
   room(id: ID!): Room!
   rooms(filter: FilterRoomInput): [Room!]!
   schedule(id: ID!): Schedule!
   schedules(filter: FilterScheduleInput): [Schedule!]!
+
+  """Búsqueda avanzada de categorías con texto libre"""
+  searchCategories(limit: Int = 20, searchText: String!): [Category!]!
+
+  """Obtener IDs únicos de categorías en las asociaciones"""
+  uniqueCategoryIds(filter: FilterGymClassCategoryInput): [String!]!
+
+  """Obtener IDs únicos de clases en las asociaciones"""
+  uniqueClassIds(filter: FilterGymClassCategoryInput): [String!]!
   user(id: ID!): User!
   userStats: UserStats!
   users(filter: FilterUserInput): [User!]!
@@ -462,6 +660,36 @@ type Schedule {
   name: String!
   startTime: String!
   updatedAt: String
+}
+
+"""Orden de clasificación"""
+enum SortOrder {
+  ASC
+  DESC
+}
+
+input StatsFilterInput {
+  dateFrom: String
+  dateTo: String
+  groupByPeriod: String
+  includeEmpty: Boolean = true
+  limit: Int = 10
+}
+
+input StringFilter {
+  caseSensitive: Boolean
+  operator: StringFilterOperator!
+  value: String!
+}
+
+"""Operadores para filtros de texto"""
+enum StringFilterOperator {
+  CONTAINS
+  ENDS_WITH
+  EQUALS
+  NOT_CONTAINS
+  NOT_EQUALS
+  STARTS_WITH
 }
 
 input UpdateCategoryInput {
