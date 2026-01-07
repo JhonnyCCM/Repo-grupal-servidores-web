@@ -1,0 +1,198 @@
+version: '3.8'
+
+services:
+  # ========================================
+  # INFRAESTRUCTURA
+  # ========================================
+  
+  # RabbitMQ - Bus de mensajería
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # Puerto AMQP
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gym-network
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+  # Redis - Storage para idempotencia
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gym-network
+    volumes:
+      - redis-data:/data
+
+  # PostgreSQL - MS Clases
+  postgres-clases:
+    image: postgres:15-alpine
+    container_name: postgres-clases
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: gym_clases
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gym-network
+    volumes:
+      - postgres-clases-data:/var/lib/postgresql/data
+
+  # PostgreSQL - MS Inscripciones
+  postgres-inscripciones:
+    image: postgres:15-alpine
+    container_name: postgres-inscripciones
+    ports:
+      - "5433:5432" # Mapeado a puerto diferente externamente
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: gym_inscripciones
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gym-network
+    volumes:
+      - postgres-inscripciones-data:/var/lib/postgresql/data
+
+  # ========================================
+  # MICROSERVICIOS
+  # ========================================
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - gym-network
+    restart: unless-stopped
+
+  # Microservicio Clases
+  ms-clases:
+    build:
+      context: ./ms-clases
+      dockerfile: Dockerfile
+    container_name: ms-clases
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      DB_HOST: postgres-clases
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: gym_clases
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      WEBHOOK_EVENT_LOGGER_URL: https://dpgrybtiuddihmgtmgqv.supabase.co/functions/v1/webhook-event-logger
+      WEBHOOK_EXTERNAL_NOTIFIER_URL: https://dpgrybtiuddihmgtmgqv.supabase.co/functions/v1/webhook-external-notifier
+      WEBHOOK_SECRET: 7723622143b35e3fe91e5789b99b7e4b4010b9035aa20a0dd0fb0a1dd85c23c7
+      SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwZ3J5YnRpdWRkaWhtZ3RtZ3F2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE3NjEzMDIsImV4cCI6MjA0NzMzNzMwMn0.KiLIr8l_N-N2RR-EsjBLe2CUpTdOV8fgqP8rSYL_iQc
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres-clases:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - gym-network
+    restart: unless-stopped
+
+  # Microservicio Inscripciones
+  ms-inscripciones:
+    build:
+      context: ./ms-inscripciones
+      dockerfile: Dockerfile
+    container_name: ms-inscripciones
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: 3002
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      DB_HOST: postgres-inscripciones
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: gym_inscripciones
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      WEBHOOK_EVENT_LOGGER_URL: https://dpgrybtiuddihmgtmgqv.supabase.co/functions/v1/webhook-event-logger
+      WEBHOOK_EXTERNAL_NOTIFIER_URL: https://dpgrybtiuddihmgtmgqv.supabase.co/functions/v1/webhook-external-notifier
+      WEBHOOK_SECRET: 7723622143b35e3fe91e5789b99b7e4b4010b9035aa20a0dd0fb0a1dd85c23c7
+      SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwZ3J5YnRpdWRkaWhtZ3RtZ3F2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzE3NjEzMDIsImV4cCI6MjA0NzMzNzMwMn0.KiLIr8l_N-N2RR-EsjBLe2CUpTdOV8fgqP8rSYL_iQc
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres-inscripciones:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - gym-network
+    restart: unless-stopped
+
+  # Webhook Receiver Local (para testing)
+  webhook-receiver:
+    image: node:18-alpine
+    container_name: webhook-receiver
+    ports:
+      - "4000:4000"
+    working_dir: /app
+    command: node webhook-receiver-local.js
+    volumes:
+      - ./scripts/webhook-receiver-local.js:/app/webhook-receiver-local.js:ro
+    networks:
+      - gym-network
+    restart: unless-stopped
+
+# ========================================
+# REDES Y VOLÚMENES
+# ========================================
+
+networks:
+  gym-network:
+    driver: bridge
+
+volumes:
+  rabbitmq-data:
+  redis-data:
+  postgres-clases-data:
+  postgres-inscripciones-data:
