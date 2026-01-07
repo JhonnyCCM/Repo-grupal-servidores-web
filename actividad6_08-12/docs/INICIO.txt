@@ -1,0 +1,207 @@
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                                                                               ║
+║        🏋️  SISTEMA DE GESTIÓN DE GIMNASIO - ARQUITECTURA DISTRIBUIDA         ║
+║                                                                               ║
+║              Mini Proyecto para Taller Académico de Microservicios           ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+✅ PROYECTO COMPLETADO Y LISTO PARA USAR
+
+═══════════════════════════════════════════════════════════════════════════════
+📦 COMPONENTES IMPLEMENTADOS
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ API Gateway (NestJS + RabbitMQ)
+   • Validación de DTOs
+   • Publicación de eventos
+   • Respuestas 202 Accepted
+
+✅ Microservicio Clases (NestJS + PostgreSQL + RabbitMQ)
+   • Consumer de eventos
+   • CRUD completo
+   • Actualización de cupos
+
+✅ Microservicio Inscripciones (NestJS + PostgreSQL + RabbitMQ + Redis)
+   • Consumer con Idempotent Pattern ⭐
+   • Validación de cupos
+   • Publicación de eventos de actualización
+
+✅ RabbitMQ (3.12 con Management UI)
+   • Exchange tipo Topic
+   • 3 colas configuradas
+   • Bindings automáticos
+
+✅ Redis (7 Alpine)
+   • Storage de claves idempotentes
+   • TTL automático de 24 horas
+
+✅ PostgreSQL (2 instancias)
+   • gym_clases (Puerto 5432)
+   • gym_inscripciones (Puerto 5433)
+
+═══════════════════════════════════════════════════════════════════════════════
+🎯 CARACTERÍSTICAS CLAVE
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ Arquitectura Híbrida (REST + Mensajería)
+✅ Event-Driven Architecture
+✅ Idempotent Consumer Pattern con Redis
+✅ Database per Service Pattern
+✅ API Gateway Pattern
+✅ Comunicación 100% asíncrona entre microservicios
+✅ Resiliencia ante fallos
+✅ Escalabilidad horizontal
+✅ Docker Compose orquestación completa
+✅ Logging estructurado
+
+═══════════════════════════════════════════════════════════════════════════════
+📚 DOCUMENTACIÓN INCLUIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+📄 README.md              → Overview y guía principal
+📄 QUICKSTART.md          → Inicio en 5 minutos
+📄 ARCHITECTURE.md        → Explicación profunda de arquitectura
+📄 TESTING.md             → Guía de pruebas de resiliencia
+📄 FAQ.md                 → Preguntas y respuestas
+📄 WORKSHOP-GUIDE.md      → Guía para instructores
+📄 PROJECT-STRUCTURE.md   → Estructura del proyecto
+📄 requests.http          → Ejemplos de requests HTTP
+
+═══════════════════════════════════════════════════════════════════════════════
+🔧 SCRIPTS UTILITARIOS
+═══════════════════════════════════════════════════════════════════════════════
+
+🔧 test-idempotency.bat   → Demostración de idempotencia
+🔧 test-idempotency.sh    → Versión Linux/Mac
+🔧 check-status.bat       → Verificar estado del sistema
+🔧 clean.bat              → Limpiar contenedores y volúmenes
+🔧 logs.bat               → Ver logs de servicios
+
+═══════════════════════════════════════════════════════════════════════════════
+🚀 INICIO RÁPIDO
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Asegúrate de tener Docker Desktop instalado y corriendo
+
+2. Abre una terminal en la carpeta del proyecto
+
+3. Ejecuta:
+   
+   docker-compose up --build
+
+4. Espera a que todos los servicios inicien (5-10 min primera vez)
+
+5. Prueba crear una clase:
+
+   curl -X POST http://localhost:3000/clases ^
+     -H "Content-Type: application/json" ^
+     -d "{\"nombre\":\"Yoga\",\"horario\":\"Lunes 18:00\",\"cupo\":20,\"instructor\":\"Juan\"}"
+
+6. Crea una inscripción:
+
+   curl -X POST http://localhost:3000/inscripciones ^
+     -H "Content-Type: application/json" ^
+     -d "{\"claseId\":1,\"alumno\":\"María\",\"email\":\"maria@test.com\"}"
+
+7. Verifica la idempotencia:
+
+   test-idempotency.bat
+
+═══════════════════════════════════════════════════════════════════════════════
+🌐 URLs DE ACCESO
+═══════════════════════════════════════════════════════════════════════════════
+
+• API Gateway:        http://localhost:3000
+• MS Clases:          http://localhost:3001
+• MS Inscripciones:   http://localhost:3002
+• RabbitMQ Management: http://localhost:15672 (guest/guest)
+
+═══════════════════════════════════════════════════════════════════════════════
+📊 ENDPOINTS DISPONIBLES
+═══════════════════════════════════════════════════════════════════════════════
+
+POST   /clases          → Crear nueva clase
+GET    /clases          → Listar clases (vía MS directo)
+POST   /inscripciones   → Crear inscripción
+GET    /inscripciones   → Listar inscripciones (vía MS directo)
+
+═══════════════════════════════════════════════════════════════════════════════
+🧪 DEMOSTRACIÓN DE IDEMPOTENCIA
+═══════════════════════════════════════════════════════════════════════════════
+
+El script test-idempotency.bat demuestra:
+
+1. Publicar el mismo mensaje 3 veces con el mismo messageId
+2. Verificar que solo se crea 1 inscripción en la base de datos
+3. Mostrar logs que indican "Duplicate message detected"
+4. Verificar la clave en Redis
+5. Confirmar la protección contra duplicados
+
+═══════════════════════════════════════════════════════════════════════════════
+🎓 IDEAL PARA TALLERES ACADÉMICOS
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ Conceptos de microservicios
+✅ Event-Driven Architecture
+✅ Patrones de resiliencia
+✅ Comunicación asíncrona
+✅ Database per Service
+✅ Idempotencia en sistemas distribuidos
+✅ Docker y orquestación
+✅ NestJS framework
+✅ RabbitMQ message broker
+✅ Redis para caching/storage
+
+═══════════════════════════════════════════════════════════════════════════════
+💡 PRÓXIMOS PASOS SUGERIDOS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Experimentar con los endpoints
+2. Revisar logs en tiempo real: docker logs -f [servicio]
+3. Explorar RabbitMQ Management UI
+4. Verificar datos en PostgreSQL
+5. Probar escenarios de fallo (detener servicios)
+6. Implementar features adicionales:
+   • Cancelación de inscripciones
+   • Notificaciones por email
+   • Reportes de asistencia
+   • Sistema de espera cuando no hay cupo
+
+═══════════════════════════════════════════════════════════════════════════════
+🐛 TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════════
+
+Problema: Servicios no inician
+Solución: docker-compose down -v && docker-compose up --build
+
+Problema: Puerto ocupado
+Solución: Cambiar puertos en docker-compose.yml
+
+Problema: RabbitMQ no conecta
+Solución: docker logs rabbitmq
+
+Problema: Ver logs de un servicio
+Solución: docker logs -f [nombre-servicio]
+
+═══════════════════════════════════════════════════════════════════════════════
+📞 SOPORTE
+═══════════════════════════════════════════════════════════════════════════════
+
+• Revisa FAQ.md para preguntas frecuentes
+• Consulta ARCHITECTURE.md para detalles técnicos
+• Lee TESTING.md para guías de pruebas
+• Usa WORKSHOP-GUIDE.md si eres instructor
+
+═══════════════════════════════════════════════════════════════════════════════
+
+                        ¡PROYECTO LISTO PARA USAR! 🎉
+
+             Lee QUICKSTART.md para comenzar en 5 minutos
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Desarrollado como material académico para talleres de arquitectura distribuida
+Implementa patrones de microservicios de nivel empresarial de forma didáctica
+
+═══════════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,99 @@
+### Crear Clase
+POST http://localhost:3000/clases
+Content-Type: application/json
+
+{
+  "nombre": "Yoga Avanzado",
+  "horario": "Lunes 18:00",
+  "cupo": 20,
+  "instructor": "Juan Pérez"
+}
+
+###
+
+### Crear Clase - Spinning
+POST http://localhost:3000/clases
+Content-Type: application/json
+
+{
+  "nombre": "Spinning Intenso",
+  "horario": "Martes 19:00",
+  "cupo": 15,
+  "instructor": "Laura Martínez"
+}
+
+###
+
+### Crear Clase - CrossFit
+POST http://localhost:3000/clases
+Content-Type: application/json
+
+{
+  "nombre": "CrossFit Básico",
+  "horario": "Miércoles 17:00",
+  "cupo": 12,
+  "instructor": "Roberto Sánchez"
+}
+
+###
+
+### Listar Clases (directo a MS)
+GET http://localhost:3001/clases
+
+###
+
+### Crear Inscripción
+POST http://localhost:3000/inscripciones
+Content-Type: application/json
+
+{
+  "claseId": 1,
+  "alumno": "María García",
+  "email": "maria@example.com"
+}
+
+###
+
+### Crear Inscripción - Usuario 2
+POST http://localhost:3000/inscripciones
+Content-Type: application/json
+
+{
+  "claseId": 1,
+  "alumno": "Carlos López",
+  "email": "carlos@example.com"
+}
+
+###
+
+### Crear Inscripción - Usuario 3
+POST http://localhost:3000/inscripciones
+Content-Type: application/json
+
+{
+  "claseId": 2,
+  "alumno": "Ana Torres",
+  "email": "ana@example.com"
+}
+
+###
+
+### Listar Inscripciones (directo a MS)
+GET http://localhost:3002/inscripciones
+
+###
+
+### Healthcheck API Gateway
+GET http://localhost:3000
+
+###
+
+### Healthcheck MS Clases
+GET http://localhost:3001
+
+###
+
+### Healthcheck MS Inscripciones
+GET http://localhost:3002
+
+###

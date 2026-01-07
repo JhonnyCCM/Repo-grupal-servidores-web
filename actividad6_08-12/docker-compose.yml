@@ -1,0 +1,172 @@
+version: '3.8'
+
+services:
+  # ========================================
+  # INFRAESTRUCTURA
+  # ========================================
+  
+  # RabbitMQ - Bus de mensajería
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # Puerto AMQP
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gym-network
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+  # Redis - Storage para idempotencia
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gym-network
+    volumes:
+      - redis-data:/data
+
+  # PostgreSQL - MS Clases
+  postgres-clases:
+    image: postgres:15-alpine
+    container_name: postgres-clases
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: gym_clases
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gym-network
+    volumes:
+      - postgres-clases-data:/var/lib/postgresql/data
+
+  # PostgreSQL - MS Inscripciones
+  postgres-inscripciones:
+    image: postgres:15-alpine
+    container_name: postgres-inscripciones
+    ports:
+      - "5433:5432" # Mapeado a puerto diferente externamente
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: gym_inscripciones
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gym-network
+    volumes:
+      - postgres-inscripciones-data:/var/lib/postgresql/data
+
+  # ========================================
+  # MICROSERVICIOS
+  # ========================================
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - gym-network
+    restart: unless-stopped
+
+  # Microservicio Clases
+  ms-clases:
+    build:
+      context: ./ms-clases
+      dockerfile: Dockerfile
+    container_name: ms-clases
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      DB_HOST: postgres-clases
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: gym_clases
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres-clases:
+        condition: service_healthy
+    networks:
+      - gym-network
+    restart: unless-stopped
+
+  # Microservicio Inscripciones
+  ms-inscripciones:
+    build:
+      context: ./ms-inscripciones
+      dockerfile: Dockerfile
+    container_name: ms-inscripciones
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: 3002
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      DB_HOST: postgres-inscripciones
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: gym_inscripciones
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres-inscripciones:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - gym-network
+    restart: unless-stopped
+
+# ========================================
+# REDES Y VOLÚMENES
+# ========================================
+
+networks:
+  gym-network:
+    driver: bridge
+
+volumes:
+  rabbitmq-data:
+  redis-data:
+  postgres-clases-data:
+  postgres-inscripciones-data:
