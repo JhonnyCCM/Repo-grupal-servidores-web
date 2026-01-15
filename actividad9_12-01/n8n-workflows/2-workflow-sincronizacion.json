@@ -1,0 +1,272 @@
+{
+  "name": "2. Sincronización Google Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sincronizacion",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "sincronizacion"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.event}}",
+              "operation": "regex",
+              "value2": "(clase\\.created|inscripcion\\.created|clase\\.quota_updated)"
+            }
+          ]
+        }
+      },
+      "id": "filtrar-eventos",
+      "name": "Filtrar Eventos",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "fecha_hora",
+              "value": "={{new Date($json.timestamp).toLocaleString('es-MX', { timeZone: 'America/Mexico_City' })}}"
+            },
+            {
+              "name": "tipo_evento",
+              "value": "={{$json.event}}"
+            },
+            {
+              "name": "id_registro",
+              "value": "={{$json.data.id || $json.id}}"
+            },
+            {
+              "name": "descripcion",
+              "value": "={{$json.data.notification?.message || $json.data.nombre || JSON.stringify($json.data)}}"
+            },
+            {
+              "name": "usuario",
+              "value": "={{$json.data.alumno || $json.data.instructor || 'Sistema'}}"
+            },
+            {
+              "name": "estado",
+              "value": "={{$json.data.spreadsheet?.status || 'procesado'}}"
+            },
+            {
+              "name": "detalles",
+              "value": "={{JSON.stringify($json.data, null, 2)}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "transformar-datos",
+      "name": "Transformar para Sheets",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{$env.GOOGLE_SHEETS_DOCUMENT_ID}}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Registro de Eventos",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "fecha_hora": "={{$json.fecha_hora}}",
+            "tipo_evento": "={{$json.tipo_evento}}",
+            "id_registro": "={{$json.id_registro}}",
+            "descripcion": "={{$json.descripcion}}",
+            "usuario": "={{$json.usuario}}",
+            "estado": "={{$json.estado}}",
+            "detalles": "={{$json.detalles}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "fecha_hora",
+              "displayName": "Fecha/Hora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "tipo_evento",
+              "displayName": "Tipo de Evento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id_registro",
+              "displayName": "ID Registro",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "descripcion",
+              "displayName": "Descripción",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "usuario",
+              "displayName": "Usuario",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "detalles",
+              "displayName": "Detalles JSON",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "append-sheets",
+      "name": "Agregar a Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [850, 200],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"message\": \"Registrado en Google Sheets\", \"row\": $json.spreadsheetRowNumber } }}"
+      },
+      "id": "respuesta-ok",
+      "name": "Respuesta OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1050, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": false, \"message\": \"Evento filtrado - no requiere sincronización\" } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "respuesta-filtrado",
+      "name": "Respuesta Filtrado",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [650, 400]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Filtrar Eventos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar Eventos": {
+      "main": [
+        [
+          {
+            "node": "Transformar para Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respuesta Filtrado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transformar para Sheets": {
+      "main": [
+        [
+          {
+            "node": "Agregar a Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agregar a Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Respuesta OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2",
+  "id": "2",
+  "meta": {
+    "instanceId": "gym-hybrid-architecture"
+  },
+  "tags": []
+}

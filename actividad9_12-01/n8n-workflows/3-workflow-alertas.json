@@ -1,0 +1,351 @@
+{
+  "name": "3. Alertas de Condiciones Críticas",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alertas",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "alertas"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.event}}",
+              "operation": "equals",
+              "value2": "clase.quota_alert"
+            }
+          ]
+        }
+      },
+      "id": "es-alerta",
+      "name": "¿Es Alerta?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "urgencyLevel",
+              "value": "={{$json.data.urgencyLevel}}"
+            },
+            {
+              "name": "mensaje",
+              "value": "={{$json.data.message}}"
+            },
+            {
+              "name": "clase",
+              "value": "={{$json.data.clase.nombre}}"
+            },
+            {
+              "name": "cupo",
+              "value": "={{$json.data.clase.cupo}}"
+            },
+            {
+              "name": "instructor",
+              "value": "={{$json.data.clase.instructor}}"
+            },
+            {
+              "name": "acciones",
+              "value": "={{JSON.stringify($json.data.alert.suggestedActions)}}"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{$json.timestamp}}"
+            }
+          ]
+        }
+      },
+      "id": "extraer-datos",
+      "name": "Extraer Datos de Alerta",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{$json.urgencyLevel}}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "critical",
+              "output": 0
+            },
+            {
+              "value2": "warning",
+              "output": 1
+            },
+            {
+              "value2": "info",
+              "output": 2
+            }
+          ]
+        }
+      },
+      "id": "switch-urgencia",
+      "name": "Switch por Urgencia",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [1050, 200]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "mensajeCompleto",
+              "value": "=🚨 *ALERTA CRÍTICA* 🚨\n\n{{$json.mensaje}}\n\n📊 *Detalles:*\n• Clase: {{$json.clase}}\n• Cupo: {{$json.cupo}} lugares\n• Instructor: {{$json.instructor}}\n\n⏰ {{$json.timestamp}}"
+            }
+          ]
+        }
+      },
+      "id": "preparar-telegram-critico",
+      "name": "Preparar Telegram Crítico",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [1250, 100]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$env.TELEGRAM_CHAT_ID}}",
+        "text": "={{$json.mensajeCompleto}}",
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "disable_notification": false
+        }
+      },
+      "id": "telegram-critico",
+      "name": "Telegram (Alta Urgencia)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1450, 100],
+      "credentials": {
+        "telegramApi": {
+          "id": "1",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "asunto",
+              "value": "=⚠️ Alerta Gimnasio: {{$json.clase}}"
+            },
+            {
+              "name": "cuerpo",
+              "value": "=<h2>⚠️ Alerta de Cupo Bajo</h2>\n\n<p><strong>{{$json.mensaje}}</strong></p>\n\n<h3>Detalles:</h3>\n<ul>\n  <li>Clase: {{$json.clase}}</li>\n  <li>Cupo disponible: {{$json.cupo}} lugares</li>\n  <li>Instructor: {{$json.instructor}}</li>\n</ul>\n\n<p><small>Fecha: {{$json.timestamp}}</small></p>"
+            }
+          ]
+        }
+      },
+      "id": "preparar-email",
+      "name": "Preparar Email",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{$env.EMAIL_FROM || 'gimnasio@example.com'}}",
+        "toEmail": "={{$env.EMAIL_ADMIN || 'admin@example.com'}}",
+        "subject": "={{$json.asunto}}",
+        "emailType": "html",
+        "message": "={{$json.cuerpo}}",
+        "options": {}
+      },
+      "id": "enviar-email",
+      "name": "Email (Media Urgencia)",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1450, 300],
+      "credentials": {
+        "smtp": {
+          "id": "1",
+          "name": "SMTP Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const alerta = $input.item.json;\n\nconsole.log('='.repeat(50));\nconsole.log('📝 LOG DE ALERTA BAJA URGENCIA');\nconsole.log('='.repeat(50));\nconsole.log(`Timestamp: ${alerta.timestamp}`);\nconsole.log(`Mensaje: ${alerta.mensaje}`);\nconsole.log(`Clase: ${alerta.clase}`);\nconsole.log(`Cupo: ${alerta.cupo}`);\nconsole.log('='.repeat(50));\n\nreturn { \n  logged: true, \n  timestamp: new Date().toISOString(),\n  alert: alerta\n};"
+      },
+      "id": "log-baja",
+      "name": "Log (Baja Urgencia)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1250, 500]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"urgency\": $('Extraer Datos de Alerta').item.json.urgencyLevel, \"action\": \"processed\" } }}"
+      },
+      "id": "respuesta-ok",
+      "name": "Respuesta OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1650, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": false, \"message\": \"No es una alerta crítica\" } }}"
+      },
+      "id": "respuesta-no-alerta",
+      "name": "Respuesta No Alerta",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [650, 400]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "¿Es Alerta?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Es Alerta?": {
+      "main": [
+        [
+          {
+            "node": "Extraer Datos de Alerta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respuesta No Alerta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer Datos de Alerta": {
+      "main": [
+        [
+          {
+            "node": "Switch por Urgencia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch por Urgencia": {
+      "main": [
+        [
+          {
+            "node": "Preparar Telegram Crítico",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log (Baja Urgencia)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Telegram Crítico": {
+      "main": [
+        [
+          {
+            "node": "Telegram (Alta Urgencia)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram (Alta Urgencia)": {
+      "main": [
+        [
+          {
+            "node": "Respuesta OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Email": {
+      "main": [
+        [
+          {
+            "node": "Email (Media Urgencia)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email (Media Urgencia)": {
+      "main": [
+        [
+          {
+            "node": "Respuesta OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log (Baja Urgencia)": {
+      "main": [
+        [
+          {
+            "node": "Respuesta OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3",
+  "id": "3",
+  "meta": {
+    "instanceId": "gym-hybrid-architecture"
+  },
+  "tags": []
+}
